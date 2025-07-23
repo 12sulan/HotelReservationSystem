@@ -15,28 +15,29 @@ const PropertyList = () => {
   ]
 
   return (
-    <div className="pList">
-      {loading ? ("loading") : (
-        <> 
-      {data && images.map((image, index) => (
-        
-      
-      <div className="pListItem">
-        <img
-          src={image}
-          alt=""
-          className="pListImg"
-        />
-        <div className="pListTitles">
-          <h1>Hotels</h1>
-          <h2>{data[index].count}{data[index].type}</h2>
+  <div className="pList">
+  {loading ? (
+    "Loading..."
+  ) : (
+    <>
+      {data &&
+        data.map((item, index) => (
+          <div className="pListItem" key={index}>
+            <img
+              src={images[index] || images[0]} 
+              alt=""
+              className="pListImg"
+            />
+            <div className="pListTitles">
+              <h1>{item.type}</h1>
+              <h2>{item.count} {item.type}</h2>
+            </div>
+          </div>
+        ))}
+    </>
+  )}
+</div>
 
-        </div>
-      </div>
-      ))}
-      
-      </>)}
-    </div>
   );
 };
 

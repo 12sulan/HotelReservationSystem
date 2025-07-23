@@ -51,18 +51,37 @@ export const getHotel = async (req, res, next) => {
 // GET ALL HOTELS
 export const getallHotel = async (req, res, next) => {
   try {
-    const allHotels = await Hotel.find();
+    const { city, type, min, max, featured, limit } = req.query;
+
+    const query = {
+      ...(type && { type }),
+      ...(featured !== undefined && { featured: featured === 'true' }),
+    };
+
+    
+    if (city) {
+      query.city = { $regex: new RegExp(city, 'i') };
+    }
+
+    const priceFilter = {};
+    if (!isNaN(parseInt(min))) priceFilter.$gte = parseInt(min);
+    if (!isNaN(parseInt(max))) priceFilter.$lte = parseInt(max);
+    if (Object.keys(priceFilter).length) query.CheapestPrice = priceFilter;
+
+    const allHotels = await Hotel.find(query).limit(parseInt(limit) || 0);
+
     res.status(200).json(allHotels);
   } catch (err) {
     next(err);
   }
 };
 
+
 export const countByCity = async (req, res, next) => {
   const cities = req.query.cities.split(",")
   try {
-    const list = await Promise.all(cities.map(city=>{
-      return Hotel.countDocuments({city:city})
+    const list = await Promise.all(cities.map(city => {
+      return Hotel.countDocuments({ city: city })
     }))
     res.status(200).json(list);
   } catch (err) {
@@ -70,21 +89,38 @@ export const countByCity = async (req, res, next) => {
   }
 };
 
-export const countByType = async (req, res, next) => {
 
+export const countByType = async (req, res, next) => {
   try {
-    const hotelCount =await Hotel.countDocuments({type: "Hotel"})
-  const apartmentCount =await Hotel.countDocuments({type: "apartment"});
-  const resortCount =await Hotel.countDocuments({type: "resort"});
-  const villaCount = await Hotel.countDocuments({type: "villa"});
-   const cabinCount =await Hotel.countDocuments({type: "cabin"});
+    const typeCounts = await Hotel.aggregate([
+      {
+        $group: {
+          _id: "$type",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    console.log(typeCounts)
+
+    const counts = {
+      Hotel: 0,
+      Apartment: 0,
+      Resort: 0,
+      Villa: 0,
+      Cabin: 0,
+    };
+
+    typeCounts.forEach((item) => {
+      counts[item._id] = item.count;
+    });
+    console.log(counts);
 
     res.status(200).json([
-    {type :"Hotel",count: hotelCount},
-    {type :"apartment",count: apartmentCount},
-    {type :"resort",count: resortCount},
-    {type :"villa",count: villaCount},
-    {type :"cabin",count: cabinCount },
+      { type: "Hotel", count: counts.Hotel },
+      { type: "Apartment", count: counts.Apartment },
+      { type: "Resort", count: counts.Resort },
+      { type: "Villa", count: counts.Villa },
+      { type: "Cabin", count: counts.Cabin },
     ]);
   } catch (err) {
     next(err);
