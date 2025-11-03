@@ -1,31 +1,78 @@
-.pList{
+/* Container for property list */
+.pList {
   width: 100%;
   max-width: 1024px;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 20px;
+  margin: 0 auto;
+  padding: 20px 0;
 }
 
-.pListItem{
-  flex:1;
+/* Individual property card */
+.pListItem {
+  flex: 1;
+  min-width: 180px;
   border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
 }
 
-.pListImg{
+.pListItem:hover {
+  transform: scale(1.02);
+}
+
+/* Image styling */
+.pListImg {
   width: 100%;
   height: 150px;
   object-fit: cover;
 }
 
-.pListTitles>h1{
+/* Title container */
+.pListTitles {
+  padding: 10px;
+}
+
+/* Type title */
+.pListTitles>h1 {
   font-size: 18px;
   color: #444;
   text-transform: capitalize;
+  margin: 0;
 }
 
-.pListTitles>h2{
+/* Count subtitle */
+.pListTitles>h2 {
   font-size: 14px;
   font-weight: 300;
+  color: #666;
+  margin-top: 5px;
+}
+
+/* Button container to center it */
+.pListButtonWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* View All Hotels button */
+.pListBtn {
+  padding: 12px 24px;
+  background-color: #0071c2;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.pListBtn:hover {
+  background-color: #005fa3;
 }

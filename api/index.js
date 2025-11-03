@@ -50,6 +50,10 @@ app.use("/api/users", usersRoute);
 app.use("/api/hotels", hotelsRoute);
 app.use("/api/rooms", roomsRoute);
 
+
+
+
+
 // Error handler
 app.use(errorHandler);
 

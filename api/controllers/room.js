@@ -1,21 +1,18 @@
 import Room from "../models/Room.js";
 import Hotel from "../models/Hotel.js";
 import createError from "../utils/error.js";
+import express from "express";
 
 // CREATE ROOM
 export const createRoom = async (req, res, next) => {
   const hotelId = req.params.hotelId;
-  console.log(hotelId)
   const newRoom = new Room(req.body);
 
   try {
     const savedRoom = await newRoom.save();
-
-    // Add the room id to the corresponding hotel
-    const hotel = await Hotel.findByIdAndUpdate(hotelId, {
+    await Hotel.findByIdAndUpdate(hotelId, {
       $push: { rooms: savedRoom._id },
     });
-    console.log(hotel);
 
     res.status(200).json(savedRoom);
   } catch (err) {
@@ -31,7 +28,24 @@ export const updateRoom = async (req, res, next) => {
       { $set: req.body },
       { new: true }
     );
-    res.status(200).json(updatedRoom);  // fixed typo: was updateRoom
+    res.status(200).json(updatedRoom);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// ✅ UPDATE ROOM AVAILABILITY
+export const updateRoomAvailability = async (req, res, next) => {
+  try {
+    const updatedRoom = await Room.updateOne(
+      { "roomNumbers._id": req.params.id },
+      {
+        $push: {
+          "roomNumbers.$.unavailableDates": { $each: req.body.dates }
+        }
+      }
+    );
+    res.status(200).json(updatedRoom);
   } catch (err) {
     next(err);
   }
@@ -41,14 +55,10 @@ export const updateRoom = async (req, res, next) => {
 export const deleteRoom = async (req, res, next) => {
   const hotelId = req.params.hotelId;
   try {
-    // Delete the room
     await Room.findByIdAndDelete(req.params.id);
-
-    // Remove the room from the hotel's rooms array
     await Hotel.findByIdAndUpdate(hotelId, {
       $pull: { rooms: req.params.id },
     });
-
     res.status(200).json("Room has been deleted.");
   } catch (err) {
     next(err);

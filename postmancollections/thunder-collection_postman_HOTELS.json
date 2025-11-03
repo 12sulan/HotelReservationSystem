@@ -1,0 +1,61 @@
+{
+    "info": {
+        "_postman_id": "f4641d6e-f2b4-42ae-aece-bdc67518dc59",
+        "name": "HOTELS",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "GETHOTEL",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:8801/api/hotels?city=nawalparasi &min=0&max=99999",
+                    "query": [
+                        {
+                            "key": "city",
+                            "value": "nawalparasi "
+                        },
+                        {
+                            "key": "min",
+                            "value": "0"
+                        },
+                        {
+                            "key": "max",
+                            "value": "99999"
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "api",
+                        "hotels"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8801"
+                }
+            }
+        },
+        {
+            "name": "GETALLHOTEL",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:8801/api/hotels",
+                    "path": [
+                        "api",
+                        "hotels"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8801"
+                }
+            }
+        }
+    ]
+}

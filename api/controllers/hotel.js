@@ -1,4 +1,5 @@
 import Hotel from "../models/Hotel.js";
+import Room from "../models/Room.js";
 
 // CREATE
 export const createHotel = async (req, res, next) => {
@@ -58,7 +59,7 @@ export const getallHotel = async (req, res, next) => {
       ...(featured !== undefined && { featured: featured === 'true' }),
     };
 
-    
+
     if (city) {
       query.city = { $regex: new RegExp(city, 'i') };
     }
@@ -124,5 +125,25 @@ export const countByType = async (req, res, next) => {
     ]);
   } catch (err) {
     next(err);
+  }
+};
+
+
+export const getHotelRooms = async (req, res, next) => {
+  try {
+    const params = req.params;
+    const hotel = await Hotel.findById(params.id);
+
+    if(!hotel.rooms){
+       res.status(200).json({"msg":"err"});
+       return;
+    }
+    const list = await Promise.all(hotel.rooms.map(room => {
+      return Room.findById(room);
+    }))
+
+    res.status(200).json(list)
+  } catch (err) {
+    next(err)
   }
 };

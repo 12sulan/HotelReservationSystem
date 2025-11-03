@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
-import "./login.scss";
+import "./login.css";
+import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
@@ -13,21 +13,20 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [validationError, setValidationError] = useState("");
 
-  const { loading, error, dispatch } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const {  loading, error, dispatch } = useContext(AuthContext);
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     setCredentials((prev) => ({
       ...prev,
       [e.target.id]: e.target.value,
     }));
-    setValidationError("");
+    setValidationError(""); 
   };
 
   const handleClick = async (e) => {
     e.preventDefault();
 
-    // Validation
     if (!credentials.username || !credentials.password) {
       setValidationError("Username and password are required.");
       return;
@@ -38,20 +37,16 @@ const Login = () => {
     try {
       const res = await axios.post("http://localhost:8801/api/auth/login", credentials);
 
-      if (res.data.isAdmin) {
+      if (res.data.token) {
         localStorage.setItem("authToken", res.data.token);
-        dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
-        navigate("/"); 
-      } else {
-        dispatch({
-          type: "LOGIN_FAILURE",
-          payload: { message: "You are not allowed!" },
-        });
       }
+
+      dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
+      navigate("/")
     } catch (error) {
       dispatch({
         type: "LOGIN_FAILURE",
-        payload: error.response?.data || { message: "Login failed" },
+        payload: error.response?.data || "Login failed",
       });
     }
   };
@@ -86,12 +81,12 @@ const Login = () => {
           </label>
         </div>
 
-        <button onClick={handleClick} className="lbutton" disabled={loading}>
+        <button  onClick={handleClick} className="lbutton" disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </button>
 
         {validationError && <span className="error">{validationError}</span>}
-        {error && <span className="error">{error.message}</span>}
+        {error && <span className="error">{error}</span>}
       </div>
     </div>
   );

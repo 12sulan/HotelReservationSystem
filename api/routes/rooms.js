@@ -1,10 +1,9 @@
-// routes/room.js
 import express from "express";
-import createError from "../utils/error.js";
 import { verifyAdmin } from "../utils/verifyToken.js";
 import {
   createRoom,
   updateRoom,
+  updateRoomAvailability,
   deleteRoom,
   getRoom,
   getallRooms
@@ -17,6 +16,7 @@ router.post("/:hotelId", verifyAdmin, createRoom);
 
 // UPDATE
 router.put("/:id", verifyAdmin, updateRoom);
+router.put("/availability/:id", updateRoomAvailability);
 
 // DELETE
 router.delete("/:id/:hotelId", verifyAdmin, deleteRoom);

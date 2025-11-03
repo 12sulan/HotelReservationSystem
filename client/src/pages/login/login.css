@@ -1,0 +1,100 @@
+.Login {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  font-family: "Segoe UI", sans-serif;
+  padding: 20px;
+}
+
+.lcontainer {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.linput {
+  padding: 14px 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+  width: 100%;
+}
+
+.linput:focus {
+  border-color: #4facfe;
+  outline: none;
+}
+
+.passwordField {
+  display: flex;
+  flex-direction: column;
+}
+
+.showPassword {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #555;
+}
+
+.lbutton {
+  padding: 14px;
+  background-color: #4facfe;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.lbutton:hover {
+  background-color: #3a8ee6;
+}
+
+.lbutton:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  text-align: center;
+}
+
+.ltitle {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: -10px;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .lcontainer {
+    padding: 25px;
+  }
+
+  .ltitle {
+    font-size: 20px;
+  }
+
+  .lbutton {
+    font-size: 15px;
+  }
+
+  .linput {
+    font-size: 15px;
+  }
+}

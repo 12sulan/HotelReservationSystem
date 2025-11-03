@@ -1,27 +1,52 @@
-.navbar{
+.navbar {
   height: 50px;
   background-color: #003580;
   display: flex;
   justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.navContainer{
+.navContainer {
   width: 100%;
   max-width: 1024px;
   color: white;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 10px;
 }
 
-.logo{
+.logo {
+  font-weight: 600;
+  font-size: 20px;
+  color: white;
+  text-decoration: none;
+}
+
+.navItems {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.username {
+  font-size: 14px;
   font-weight: 500;
+  margin-right: 8px;
 }
 
-.navButton{
-  margin-left: 20px;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
+.navButton {
+  background-color: white;
   color: #003580;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.navButton:hover {
+  background-color: #e5e5e5;
 }

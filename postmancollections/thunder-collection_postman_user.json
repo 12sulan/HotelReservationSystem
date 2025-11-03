@@ -1,0 +1,58 @@
+{
+    "info": {
+        "_postman_id": "37552af3-1a03-41df-997c-5e6bbece7833",
+        "name": "user",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "login",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://localhost:8801/api/auth/login",
+                    "path": [
+                        "api",
+                        "auth",
+                        "login"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8801"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"username\":\"sujal\",\n  \"password\":\"13579\"\n}"
+                }
+            }
+        },
+        {
+            "name": "updateuser",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:8801/api/users/checkadmin/68776d8e75394c096538bd26",
+                    "path": [
+                        "api",
+                        "users",
+                        "checkadmin",
+                        "68776d8e75394c096538bd26"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8801"
+                }
+            }
+        }
+    ]
+}

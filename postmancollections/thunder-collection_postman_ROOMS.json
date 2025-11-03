@@ -1,0 +1,94 @@
+{
+    "info": {
+        "_postman_id": "5b7f5f2b-6913-4158-bb01-2015312bc9f8",
+        "name": "ROOMS",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "getallrooms",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:8801/api/rooms",
+                    "path": [
+                        "api",
+                        "rooms"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8801"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"dates\":[\"2025-07-18T04:47:53.781Z\",\"2025-07-18T04:47:53.781Z\"]\n}"
+                }
+            }
+        },
+        {
+            "name": "create room",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://localhost:8801/api/rooms/6878ad3f931ef48e082fd7ef",
+                    "path": [
+                        "api",
+                        "rooms",
+                        "6878ad3f931ef48e082fd7ef"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8801"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"title\":\"King Room 2\",\n  \"discrip\":\"King size bed,1 bathroom, balcony\",\n  \"price\":102,\n  \"maxpeople\":2,\n  \"roomNumbers\":[{\"number\":103},{\"number\":104}]\n}"
+                }
+            }
+        },
+        {
+            "name": "add date",
+            "request": {
+                "method": "PUT",
+                "url": {
+                    "raw": "http://localhost:8801/api/rooms/availability/6879d1f9f993a003e6c51a30",
+                    "path": [
+                        "api",
+                        "rooms",
+                        "availability",
+                        "6879d1f9f993a003e6c51a30"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8801"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"dates\":[\"2025-07-18T04:47:53.781Z\",\"2025-07-18T04:47:53.781Z\"]\n}"
+                }
+            }
+        }
+    ]
+}

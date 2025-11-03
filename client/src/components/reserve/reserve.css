@@ -1,0 +1,118 @@
+.reserve {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.rContainer {
+  background-color: white;
+  padding: 30px;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 12px;
+  position: relative;
+  max-height: 90%;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.rClose {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  font-size: 24px;
+  color: #888;
+  transition: color 0.3s ease;
+}
+
+.rClose:hover {
+  color: #e74c3c;
+}
+
+.rContainer span {
+  font-size: 22px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.rItem {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: #fafafa;
+}
+
+.rItemInfo {
+  margin-bottom: 10px;
+}
+
+.rTitle {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.rDiscrip {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.rMax {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.rPrice {
+  font-size: 16px;
+  font-weight: 500;
+  color: #3727ae;
+}
+
+.room {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.room label {
+  font-size: 14px;
+  color: #333;
+}
+
+.room input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.rButton {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background-color: #3498db;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.rButton:hover {
+  background-color: #2980b9;
+}
