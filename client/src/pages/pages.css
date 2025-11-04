@@ -1,0 +1,56 @@
+.pageContainer {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 30px 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+.pageContainer h1 {
+    color: #00A86B;
+    /* Jade green heading */
+    font-size: 32px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.pageContainer p {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.pageContainer ul {
+    list-style: disc inside;
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.pageContainer ul li {
+    margin-bottom: 8px;
+}
+
+.pageContainer a {
+    color: #00A86B;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.pageContainer a:hover {
+    color: #007a49;
+    text-decoration: underline;
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 600px) {
+    .pageContainer {
+        padding: 20px 15px;
+    }
+
+    .pageContainer h1 {
+        font-size: 26px;
+    }
+}

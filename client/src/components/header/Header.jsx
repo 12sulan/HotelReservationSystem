@@ -10,8 +10,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./header.css";
 import { DateRange } from "react-date-range";
 import { useContext, useState } from "react";
-import "react-date-range/dist/styles.css"; 
-import "react-date-range/dist/theme/default.css"; 
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { SearchContext, SearchContextProvider } from "../../context/SearchContext";
@@ -35,7 +35,7 @@ const Header = ({ type }) => {
   });
 
   const navigate = useNavigate();
-   const {  user} = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   const handleOption = (name, operation) => {
     setOptions((prev) => {
@@ -46,10 +46,11 @@ const Header = ({ type }) => {
     });
   };
 
-  const {dispatch}= useContext(SearchContext)
+  const { dispatch } = useContext(SearchContext)
 
   const handleSearch = () => {
-    dispatch({type:"NEW_SEARCH",payload:{destination,dates,options}});
+    // dispatch with the `city` field to match SearchContext state shape
+    dispatch({ type: "NEW_SEARCH", payload: { city: destination, dates, options } });
     navigate("/hotels", { state: { destination, dates, options } });
   };
 
@@ -65,7 +66,7 @@ const Header = ({ type }) => {
             <FontAwesomeIcon icon={faBed} />
             <span>Stays</span>
           </div>
-          
+
         </div>
         {type !== "list" && (
           <>
@@ -76,7 +77,7 @@ const Header = ({ type }) => {
               Get rewarded for your travels – unlock instant savings of 10% or
               more with a free LICTbookin.com account.
             </p>
-           { !user && <button className="headerBtn">Sign in / Register</button>}
+            {!user && <button className="headerBtn">Sign in / Register</button>}
             <div className="headerSearch">
               <div className="headerSearchItem">
                 <FontAwesomeIcon icon={faBed} className="headerIcon" />

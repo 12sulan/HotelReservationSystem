@@ -1,52 +1,77 @@
 .navbar {
-  height: 50px;
-  background-color: #003580;
-  display: flex;
-  justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  background: linear-gradient(135deg, #009688, #00796b);
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .navContainer {
-  width: 100%;
-  max-width: 1024px;
-  color: white;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10px;
 }
 
 .logo {
-  font-weight: 600;
-  font-size: 20px;
+  font-size: 26px;
+  font-weight: 700;
   color: white;
   text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: 0.3s ease;
+}
+
+.logo:hover {
+  color: #a7ffeb;
+}
+
+.logo-highlight {
+  color: #a7ffeb;
 }
 
 .navItems {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
 .username {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
-  margin-right: 8px;
 }
 
 .navButton {
   background-color: white;
-  color: #003580;
+  color: #00796b;
+  padding: 8px 18px;
   border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 14px;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s ease;
   text-decoration: none;
-  transition: background-color 0.3s ease;
 }
 
 .navButton:hover {
-  background-color: #e5e5e5;
+  background-color: #a7ffeb;
+  color: #004d40;
+  transform: translateY(-1px);
+}
+
+.navButton.login {
+  background-color: #a7ffeb;
+}
+
+.navButton.logout {
+  background-color: #e53935;
+  color: white;
+}
+
+.navButton.logout:hover {
+  background-color: #c62828;
 }

@@ -8,14 +8,20 @@ import hotelsRoute from "./routes/hotels.js";
 import roomsRoute from "./routes/rooms.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import cookieParser from "cookie-parser";
+import subscribeRoute from "./routes/subscribe.js";
+
 import cors from "cors";
 
 dotenv.config();
 
 const app = express();
-app.use(cors("http://localhost:5173"))
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true, 
+}));
 
-// ✅ MongoDB Connection
+
+
 const connect = async () => {
   try {
     await mongoose.connect(process.env.MONGO);
@@ -49,6 +55,8 @@ app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute);
 app.use("/api/hotels", hotelsRoute);
 app.use("/api/rooms", roomsRoute);
+app.use("/api/subscribe", subscribeRoute);
+
 
 
 

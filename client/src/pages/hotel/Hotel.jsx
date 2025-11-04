@@ -61,7 +61,7 @@ const Hotel = () => {
 
   const handleClick = () => {
     if (user) {
-setOpenModal(true);
+      setOpenModal(true);
     } else {
       navigate("/login")
     }
@@ -112,7 +112,7 @@ setOpenModal(true);
               Excellent location – {data.distance}m from Nawalparasi.
             </span>
             <span className="hotelPriceHighlight">
-              Book a stay over ${data.CheapestPrice} and get a free airport taxi!
+              Book a stay over ${data.cheapestPrice} and get a free airport taxi!
             </span>
             <div className="hotelImages">
               {data.photos?.map((photo, i) => (
@@ -139,7 +139,7 @@ setOpenModal(true);
                 </span>
                 <h2>
                   <b>
-                    ${days * data.CheapestPrice * (options?.room || 1)}
+                    ${days * data.cheapestPrice * (options?.room || 1)}
                   </b>{" "}
                   ({days} nights)
                 </h2>
@@ -151,7 +151,7 @@ setOpenModal(true);
           <Footer />
         </div>
       )}
-      {openModal && <Reserve setOpen={setOpenModal} hotelId={id}/>}
+      {openModal && <Reserve setOpen={setOpenModal} hotelId={id} />}
     </div>
   );
 };

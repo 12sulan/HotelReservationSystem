@@ -67,7 +67,8 @@ export const getallHotel = async (req, res, next) => {
     const priceFilter = {};
     if (!isNaN(parseInt(min))) priceFilter.$gte = parseInt(min);
     if (!isNaN(parseInt(max))) priceFilter.$lte = parseInt(max);
-    if (Object.keys(priceFilter).length) query.CheapestPrice = priceFilter;
+    // if (Object.keys(priceFilter).length) query.cheapestPrice = priceFilter;
+    if (Object.keys(priceFilter).length) query.cheapestPrice = priceFilter;
 
     const allHotels = await Hotel.find(query).limit(parseInt(limit) || 0);
 
@@ -77,73 +78,61 @@ export const getallHotel = async (req, res, next) => {
   }
 };
 
-
+// COUNT BY CITY
 export const countByCity = async (req, res, next) => {
-  const cities = req.query.cities.split(",")
+  const cities = req.query.cities.split(",");
   try {
-    const list = await Promise.all(cities.map(city => {
-      return Hotel.countDocuments({ city: city })
-    }))
+    const list = await Promise.all(
+      cities.map((city) => Hotel.countDocuments({ city }))
+    );
     res.status(200).json(list);
   } catch (err) {
     next(err);
   }
 };
 
-
+// COUNT BY TYPE
 export const countByType = async (req, res, next) => {
   try {
     const typeCounts = await Hotel.aggregate([
-      {
-        $group: {
-          _id: "$type",
-          count: { $sum: 1 },
-        },
-      },
+      { $group: { _id: "$type", count: { $sum: 1 } } },
     ]);
-    console.log(typeCounts)
 
     const counts = {
       Hotel: 0,
       Apartment: 0,
       Resort: 0,
-      Villa: 0,
-      Cabin: 0,
     };
 
     typeCounts.forEach((item) => {
       counts[item._id] = item.count;
     });
-    console.log(counts);
 
     res.status(200).json([
       { type: "Hotel", count: counts.Hotel },
       { type: "Apartment", count: counts.Apartment },
       { type: "Resort", count: counts.Resort },
-      { type: "Villa", count: counts.Villa },
-      { type: "Cabin", count: counts.Cabin },
     ]);
   } catch (err) {
     next(err);
   }
 };
 
-
+// GET HOTEL ROOMS
 export const getHotelRooms = async (req, res, next) => {
   try {
-    const params = req.params;
-    const hotel = await Hotel.findById(params.id);
+    const hotel = await Hotel.findById(req.params.id);
 
-    if(!hotel.rooms){
-       res.status(200).json({"msg":"err"});
-       return;
+    if (!hotel.rooms || hotel.rooms.length === 0) {
+      return res.status(200).json({ message: "No rooms found for this hotel" });
     }
-    const list = await Promise.all(hotel.rooms.map(room => {
-      return Room.findById(room);
-    }))
 
-    res.status(200).json(list)
+    const list = await Promise.all(
+      hotel.rooms.map((room) => Room.findById(room))
+    );
+
+    res.status(200).json(list);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };

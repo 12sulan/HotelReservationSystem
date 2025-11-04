@@ -1,30 +1,81 @@
-.mail{
+.mail {
   width: 100%;
   margin-top: 50px;
-  background-color: #003580;
+  background-color: #00A86B;
+  /* Jade green background */
   color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  padding: 50px;
+  padding: 50px 20px;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-.mailInputContainer>input{
+.mailTitle {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.mailDesc {
+  font-size: 18px;
+}
+
+.mailInputContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.mailInputContainer>input {
   width: 300px;
-  height: 30px;
-  padding: 10px;
+  max-width: 100%;
+  height: 45px;
+  padding: 0 15px;
   border: none;
-  margin-right: 10px;
   border-radius: 5px;
+  outline: none;
+  font-size: 16px;
 }
 
-.mailInputContainer>button{
-  height: 50px;
-  background-color: #0071c2;
+.mailInputContainer>input::placeholder {
+  color: #888;
+}
+
+.mailInputContainer>button {
+  height: 45px;
+  padding: 0 20px;
+  background-color: #007a49;
+  /* Darker jade for button */
   color: white;
-  font-weight: 500;
+  font-weight: 600;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.mailInputContainer>button:hover:enabled {
+  background-color: #005f36;
+  transform: translateY(-2px);
+}
+
+.mailInputContainer>button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .mailInputContainer {
+    flex-direction: column;
+  }
+
+  .mailInputContainer>input,
+  .mailInputContainer>button {
+    width: 100%;
+  }
 }
