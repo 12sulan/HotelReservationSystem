@@ -3,6 +3,10 @@ import Login from "./pages/login/Login";
 import List from "./pages/list/List";
 import Single from "./pages/single/Single";
 import New from "./pages/new/New";
+import EditHotel from "./pages/editHotel/EditHotel";
+import EditRoom from "./pages/editRoom/EditRoom";
+
+
 import { userInputs, hotelInputs, roomInputs } from "./formSource";
 import "./style/dark.scss";
 import { useContext } from "react";
@@ -57,7 +61,12 @@ function App() {
             path="/users/new"
             element={
               <ProtectedRoute>
-                <New inputs={userInputs} title="Add New User" type="users" />
+                <New
+                  inputs={userInputs}
+                  title="Add New User"
+                  type="users"
+                  apiEndpoint="http://localhost:8801/api/auth/register"
+                />
               </ProtectedRoute>
             }
           />
@@ -83,7 +92,21 @@ function App() {
             path="/hotels/new"
             element={
               <ProtectedRoute>
-                <New inputs={hotelInputs} title="Add New Hotel" type="hotels" />
+                <New
+                  inputs={hotelInputs}
+                  title="Add New Hotel"
+                  type="hotels"
+                  apiEndpoint="http://localhost:8801/api/hotels"
+                />
+              </ProtectedRoute>
+            }
+          />
+          {/* ✅ EDIT HOTEL */}
+          <Route
+            path="/hotels/edit/:id"
+            element={
+              <ProtectedRoute>
+                <EditHotel />
               </ProtectedRoute>
             }
           />
@@ -109,7 +132,21 @@ function App() {
             path="/rooms/new"
             element={
               <ProtectedRoute>
-                <New inputs={roomInputs} title="Add New Room" type="rooms" />
+                <New
+                  inputs={roomInputs}
+                  title="Add New Room"
+                  type="rooms"
+                  apiEndpoint="http://localhost:8801/api/rooms"
+                />
+              </ProtectedRoute>
+            }
+          />
+          {/* ✅ EDIT ROOM */}
+          <Route
+            path="/rooms/edit/:id"
+            element={
+              <ProtectedRoute>
+                <EditRoom />
               </ProtectedRoute>
             }
           />

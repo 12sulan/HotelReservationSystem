@@ -6,19 +6,19 @@ export const userInputs = [
     id: "username",
     label: "Username",
     type: "text",
-    placeholder: "john_doe",
+    placeholder: "sulabh_magar",
   },
   {
     id: "name",
     label: "Full Name",
     type: "text",
-    placeholder: "John Doe",
+    placeholder: "Sulabh Magar",
   },
   {
     id: "email",
     label: "Email",
     type: "email",
-    placeholder: "john_doe@gmail.com",
+    placeholder: "magar_sulabh@gmail.com",
   },
   {
     id: "phone",
@@ -54,7 +54,7 @@ export const hotelInputs = [
     id: "name",
     label: "Hotel Name",
     type: "text",
-    placeholder: "Hotel Sunshine",
+    placeholder: "Hotel Narayani",
   },
   {
     id: "type",
@@ -66,13 +66,13 @@ export const hotelInputs = [
     id: "city",
     label: "City",
     type: "text",
-    placeholder: "Pokhara",
+    placeholder: "naranghat, nawalpur",
   },
   {
     id: "address",
     label: "Address",
     type: "text",
-    placeholder: "Lakeside Road, Pokhara",
+    placeholder: "riverside, gaindakot-1",
   },
   {
     id: "distance",
@@ -90,13 +90,13 @@ export const hotelInputs = [
     id: "desc",
     label: "Description",
     type: "text",
-    placeholder: "Beautiful lakeside hotel with mountain views",
+    placeholder: "Beautiful riverside hotel with jungle views",
   },
   {
     id: "price",
     label: "Starting Price (NPR)",
     type: "number",
-    placeholder: "4000",
+    placeholder: "500",
   },
   {
     id: "featured",

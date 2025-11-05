@@ -5,6 +5,7 @@
   border-radius: 10px;
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
 
+  /* Title Section */
   .datatableTitle {
     width: 100%;
     font-size: 24px;
@@ -32,6 +33,7 @@
     }
   }
 
+  /* Image Cells */
   .cellWithImg {
     display: flex;
     align-items: center;
@@ -45,6 +47,7 @@
     }
   }
 
+  /* Status Cells */
   .cellWithStatus {
     padding: 5px 10px;
     border-radius: 5px;
@@ -68,39 +71,51 @@
     }
   }
 
+  /* Action Buttons */
   .cellAction {
     display: flex;
     align-items: center;
     gap: 10px;
 
-    .viewButton {
-      padding: 3px 8px;
+    .viewButton,
+    .editButton,
+    .deleteButton {
+      padding: 4px 8px;
       border-radius: 5px;
-      color: darkblue;
-      border: 1px dotted rgba(0, 0, 139, 0.6);
+      font-size: 13px;
+      color: white;
       cursor: pointer;
-      transition: all 0.2s ease;
+      border: none;
+      transition: 0.2s ease;
+    }
+
+    .viewButton {
+      background-color: #2196f3;
 
       &:hover {
-        background-color: rgba(0, 0, 139, 0.1);
+        background-color: #1976d2;
+      }
+    }
+
+    .editButton {
+      background-color: #fbc02d;
+      color: #333;
+
+      &:hover {
+        background-color: #f9a825;
       }
     }
 
     .deleteButton {
-      padding: 3px 8px;
-      border-radius: 5px;
-      color: crimson;
-      border: 1px dotted rgba(220, 20, 60, 0.6);
-      cursor: pointer;
-      transition: all 0.2s ease;
+      background-color: #e53935;
 
       &:hover {
-        background-color: rgba(220, 20, 60, 0.1);
+        background-color: #c62828;
       }
     }
   }
 
-  /* DataGrid customization */
+  /* DataGrid Overrides */
   .MuiDataGrid-root {
     border: none;
     font-size: 14px;

@@ -1,3 +1,4 @@
+import { binarySearch } from "../../utils/search";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import "./home.scss";
@@ -11,43 +12,43 @@ import axios from "axios";
 const Home = () => {
   const [users, setUsers] = useState([]);
   const [bookings, setBookings] = useState([]);
-  const [stats, setStats] = useState({
-    users: { amount: 0, diff: 0 },
-    bookings: { amount: 0, diff: 0 },
-    earnings: { amount: 0, diff: 0 },
-    balance: { amount: 0, diff: 0 },
-  });
+  const [hotels, setHotels] = useState([]);
+  const [rooms, setRooms] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch users
-        const userRes = await axios.get("/api/users");
-        setUsers(userRes.data);
+        const [userRes, bookingRes, hotelRes, roomRes] = await Promise.all([
+          axios.get("/api/users"),
+          axios.get("/api/bookings"),
+          axios.get("/api/hotels"),
+          axios.get("/api/rooms"),
+        ]);
 
-        // Fetch bookings
-        const bookingRes = await axios.get("/api/bookings");
-        setBookings(bookingRes.data);
+        // Make sure each response is an array
+        const userData = Array.isArray(userRes.data) ? userRes.data : [];
+        const bookingData = Array.isArray(bookingRes.data) ? bookingRes.data : [];
+        const hotelData = Array.isArray(hotelRes.data) ? hotelRes.data : [];
+        const roomData = Array.isArray(roomRes.data) ? roomRes.data : [];
 
-        // Calculate stats
-        const userCount = userRes.data.length;
-        const bookingCount = bookingRes.data.length;
-        const earnings = bookingRes.data.reduce((sum, b) => sum + b.amount, 0);
+        // Set state
+        setUsers(userData);
+        setBookings(bookingData);
+        setHotels(hotelData);
+        setRooms(roomData);
 
-        // Example: calculate percentage difference from previous period
-        const calculateDiff = (current, previous) => {
-          if (!previous) return 0;
-          return Math.round(((current - previous) / previous) * 100);
-        };
+        // --- Binary search example ---
+        if (userData.length > 0) {
+          const idx = binarySearch(userData, userData[0]._id, (u) => u._id);
+          if (idx !== -1) console.log("Binary search user found:", userData[idx]);
+        }
 
-        setStats({
-          users: { amount: userCount, diff: calculateDiff(userCount, 50) }, // replace 50 with previous period
-          bookings: { amount: bookingCount, diff: calculateDiff(bookingCount, 40) },
-          earnings: { amount: earnings, diff: calculateDiff(earnings, 2000) },
-          balance: { amount: earnings, diff: calculateDiff(earnings, 2000) }, // assuming balance = earnings
-        });
+        // --- Reduce example ---
+        const totalRooms = roomData.reduce((sum) => sum + 1, 0);
+        console.log("Total rooms counted using reduce:", totalRooms);
+
       } catch (err) {
-        console.error(err);
+        console.error("Dashboard fetch error:", err);
       }
     };
 
@@ -59,11 +60,12 @@ const Home = () => {
       <Sidebar />
       <div className="homeContainer">
         <Navbar />
+
         <div className="widgets">
-          <Widget type="user" amount={stats.users.amount} diff={stats.users.diff} />
-          <Widget type="order" amount={stats.bookings.amount} diff={stats.bookings.diff} />
-          <Widget type="earning" amount={stats.earnings.amount} diff={stats.earnings.diff} />
-          <Widget type="balance" amount={stats.balance.amount} diff={stats.balance.diff} />
+          <Widget type="user" amount={users.length} />
+          <Widget type="order" amount={bookings.length} />
+          <Widget type="hotel" amount={hotels.length} />
+          <Widget type="room" amount={rooms.length} />
         </div>
 
         <div className="charts">
@@ -73,7 +75,7 @@ const Home = () => {
 
         <div className="listContainer">
           <div className="listTitle">Latest Bookings</div>
-          <Datatable data={bookings} type="bookings" />
+          <Datatable data={bookings} type="bookings" users={users} hotels={hotels} rooms={rooms} />
         </div>
       </div>
     </div>

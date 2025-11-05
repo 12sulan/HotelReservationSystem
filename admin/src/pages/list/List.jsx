@@ -11,7 +11,9 @@ const List = ({ type }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:8801/api/${type}`, { withCredentials: true });
+        const res = await axios.get(`http://localhost:8801/api/${type}`,
+          { withCredentials: true }
+        );
         setData(res.data);
         setLoading(false);
       } catch (err) {

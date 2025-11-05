@@ -85,8 +85,22 @@ export const getBooking = async (req, res, next) => {
 // Get all bookings (admin only)
 export const getAllBookings = async (req, res, next) => {
     try {
-        const bookings = await Booking.find();
-        res.status(200).json(bookings);
+        const bookings = await Booking.find()
+            .populate('userId', 'username') // Populate user's name
+            .populate('hotelId', 'name') // Populate hotel's name
+            .lean() // Convert to plain JS object for better performance
+            .exec();
+
+        // Transform the response to include clear field names
+        const formattedBookings = bookings.map(booking => ({
+            ...booking,
+            username: booking.userId?.username || "Unknown User",
+            hotelName: booking.hotelId?.name || "Unknown Hotel",
+            userId: booking.userId?._id, // Keep the original userId
+            hotelId: booking.hotelId?._id // Keep the original hotelId
+        }));
+
+        res.status(200).json(formattedBookings);
     } catch (err) {
         next(err);
     }

@@ -1,20 +1,20 @@
 import "./list.css";
 import Navbar from "../../components/navbar/Navbar";
 import Header from "../../components/header/Header";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { DateRange } from "react-date-range";
 import SearchItem from "../../components/searchItem/SearchItem";
 import useFetch from "../../hooks/useFetch";
+import { binarySearch } from "../../utils/search";
 
 const List = () => {
   const location = useLocation();
-  const navigate = useNavigate();
 
-  // Get the city from URL search params
+  // Get city from URL search params
   const searchParams = new URLSearchParams(location.search);
-  const cityFromUrl = searchParams.get('city');
+  const cityFromUrl = searchParams.get("city");
 
   // Use fallback state if no navigation state is passed
   const state = location.state || {
@@ -29,16 +29,47 @@ const List = () => {
   const [options, setOptions] = useState(state.options);
   const [min, setMin] = useState(undefined);
   const [max, setMax] = useState(undefined);
+  const [filteredData, setFilteredData] = useState([]);
 
   const { data, loading, error, refetch } = useFetch(
     `/hotels?city=${destination}&min=${min || 0}&max=${max || 99999}`
   );
 
+  // Handle search click
   const handleClick = () => {
     refetch();
   };
 
-  // Removed redirect to '/' because fallback state covers it
+  // Apply frontend algorithms after data changes
+  useEffect(() => {
+    if (!data || data.length === 0 || !destination) {
+      setFilteredData([]);
+      return;
+    }
+
+    // Binary Search example: find first hotel that exactly matches the city
+    const sortedByCity = [...data].sort((a, b) => a.city.localeCompare(b.city));
+    const cityIndex = binarySearch(sortedByCity, destination.toLowerCase(), (h) =>
+      h.city.toLowerCase()
+    );
+
+    let resultData;
+    if (cityIndex !== -1) {
+      // Exact match found, filter all hotels with same city
+      resultData = sortedByCity.filter(
+        (h) => h.city.toLowerCase() === destination.toLowerCase()
+      );
+    } else {
+      // No exact match, show empty
+      resultData = [];
+    }
+
+    // Second algorithm: Reduce to calculate total rooms
+    const totalRooms = resultData.reduce((sum, hotel) => sum + hotel.rooms.length, 0);
+    console.log(`Reduce: Total rooms in ${destination}:`, totalRooms);
+
+    setFilteredData(resultData);
+  }, [data, destination]);
 
   return (
     <div>
@@ -48,6 +79,7 @@ const List = () => {
         <div className="listWrapper">
           <div className="listSearch">
             <h1 className="lsTitle">Search</h1>
+
             <div className="lsItem">
               <label>Destination</label>
               <input
@@ -56,6 +88,7 @@ const List = () => {
                 onChange={(e) => setDestination(e.target.value)}
               />
             </div>
+
             <div className="lsItem">
               <label>Check-in Date</label>
               <span onClick={() => setOpenDate(!openDate)}>
@@ -72,6 +105,7 @@ const List = () => {
                 />
               )}
             </div>
+
             <div className="lsItem">
               <label>Options</label>
               <div className="lsOptions">
@@ -124,8 +158,10 @@ const List = () => {
                 </div>
               </div>
             </div>
+
             <button onClick={handleClick}>Search</button>
           </div>
+
           <div className="listResult">
             {loading ? (
               "Loading..."
@@ -133,11 +169,10 @@ const List = () => {
               <span>Something went wrong. Please try again later.</span>
             ) : (
               <>
-                {data && data.length > 0 ? (
-                  data.map((item) => <SearchItem item={item} key={item._id} />)
-                ) : (
-                  <span>No results found.</span>
-                )}
+                {(filteredData.length > 0 ? filteredData : []).map((item) => (
+                  <SearchItem item={item} key={item._id} />
+                ))}
+                {filteredData.length === 0 && destination && <span>No results found.</span>}
               </>
             )}
           </div>
