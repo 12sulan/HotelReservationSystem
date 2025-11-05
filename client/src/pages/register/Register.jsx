@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./register.css";
 import { AuthContext } from "../../context/AuthContext";
+import axios from "axios";
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -53,26 +54,25 @@ const Register = () => {
 
         setLoading(true);
         try {
-            const res = await fetch("http://localhost:8801/api/auth/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
-            });
-
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message || "Something went wrong");
+            const { data } = await axios.post("http://localhost:8801/api/auth/register",
+                formData,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true
+                }
+            );
 
             // Auto-login
-            const loginRes = await fetch("http://localhost:8801/api/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
+            const { data: loginData } = await axios.post("http://localhost:8801/api/auth/login",
+                {
                     username: formData.username,
                     password: formData.password,
-                }),
-            });
-
-            const loginData = await loginRes.json();
+                },
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true
+                }
+            );
             if (!loginRes.ok) throw new Error(loginData.message || "Login failed");
 
             dispatch({ type: "LOGIN_SUCCESS", payload: loginData.details });

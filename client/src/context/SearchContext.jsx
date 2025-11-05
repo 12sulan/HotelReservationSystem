@@ -2,7 +2,7 @@ import { useReducer, createContext } from "react";
 
 const INITIAL_STATE = {
     city: "",
-    // Provide a sensible default dates array so consumers can safely access dates[0]
+    
     dates: [
         {
             startDate: new Date(),

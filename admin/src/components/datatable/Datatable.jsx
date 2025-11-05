@@ -2,6 +2,7 @@ import "./datatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
 
 const Datatable = ({ data: initialData, type }) => {
   const [data, setData] = useState(initialData);
@@ -9,7 +10,12 @@ const Datatable = ({ data: initialData, type }) => {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`/api/${type}/${id}`, { method: "DELETE" });
+      await axios.delete(`http://localhost:8801/api/${type}/${id}`, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
       setData(data.filter((item) => item._id !== id));
     } catch (err) {
       console.error("Delete failed:", err);
@@ -35,11 +41,13 @@ const Datatable = ({ data: initialData, type }) => {
       { field: "maxPeople", headerName: "Max People", width: 150 },
     ],
     bookings: [
-      { field: "user", headerName: "User ID", width: 200 },
-      { field: "hotel", headerName: "Hotel ID", width: 200 },
-      { field: "room", headerName: "Room ID", width: 150 },
-      { field: "dateStart", headerName: "Start Date", width: 150 },
-      { field: "dateEnd", headerName: "End Date", width: 150 },
+      {
+        field: "userId", headerName: "User ID", width: 200
+      },
+      { field: "hotelId", headerName: "Hotel ID", width: 200 },
+      { field: "roomNumbers", headerName: "Room Numbers", width: 150 },
+      { field: "checkInDate", headerName: "Start Date", width: 150 },
+      { field: "checkOutDate", headerName: "End Date", width: 150 },
       { field: "amount", headerName: "Amount", width: 120 },
       { field: "status", headerName: "Status", width: 120 },
     ],

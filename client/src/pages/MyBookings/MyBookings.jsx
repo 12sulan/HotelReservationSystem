@@ -2,21 +2,24 @@ import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
 import "./myBookings.css";
+import axios from "axios";
 
 const MyBookings = () => {
     const { user } = useContext(AuthContext);
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [cancelId, setCancelId] = useState(null); // For modal
+    const [cancelId, setCancelId] = useState(null);
 
     useEffect(() => {
         const fetchBookings = async () => {
             try {
-                const res = await fetch(
+                const { data } = await axios.get(
                     `http://localhost:8801/api/bookings/user/${user._id}`,
-                    { headers: { "Content-Type": "application/json" } }
+                    {
+                        headers: { "Content-Type": "application/json" },
+                        withCredentials: true
+                    }
                 );
-                const data = await res.json();
                 setBookings(data);
                 setLoading(false);
             } catch (err) {
@@ -30,11 +33,11 @@ const MyBookings = () => {
 
     const handleCancel = async (id) => {
         try {
-            const res = await fetch(`http://localhost:8801/api/bookings/${id}`, {
-                method: "DELETE",
+            const response = await axios.delete(`http://localhost:8801/api/bookings/${id}`, {
                 headers: { "Content-Type": "application/json" },
+                withCredentials: true
             });
-            if (res.ok) {
+            if (response.status === 200) {
                 setBookings(bookings.filter((b) => b._id !== id));
                 setCancelId(null);
             } else {

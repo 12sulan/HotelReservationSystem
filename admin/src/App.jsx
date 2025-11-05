@@ -3,19 +3,18 @@ import Login from "./pages/login/Login";
 import List from "./pages/list/List";
 import Single from "./pages/single/Single";
 import New from "./pages/new/New";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { userInputs, hotelInputs, roomInputs } from "./formSource";
 import "./style/dark.scss";
 import { useContext } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 import { AuthContext } from "./context/AuthContext";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
   const { user } = useContext(AuthContext);
 
   const ProtectedRoute = ({ children }) => {
-    // console.log("ProtectedRoute check:", user);
     if (!user || !user.isAdmin) return <Navigate to="/login" />;
     return children;
   };
@@ -24,11 +23,12 @@ function App() {
     <div className={darkMode ? "app dark" : "app"}>
       <BrowserRouter>
         <Routes>
+          {/* LOGIN */}
           <Route path="/login" element={<Login />} />
 
-          {/* Home */}
+          {/* HOME / DASHBOARD */}
           <Route
-            index
+            path="/"
             element={
               <ProtectedRoute>
                 <Home />
@@ -138,4 +138,3 @@ function App() {
 }
 
 export default App;
-

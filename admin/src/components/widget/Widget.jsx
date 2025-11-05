@@ -4,43 +4,34 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import { Link } from "react-router-dom";
 
-const Widget = ({ type }) => {
+const Widget = ({ type, amount, diff }) => {
   let data;
-
-  //temporary
-  const amount = 100;
-  const diff = 20;
 
   switch (type) {
     case "user":
       data = {
         title: "USERS",
         isMoney: false,
-        link: "See all users",
+        link: "/users", // link to user datatable
         icon: (
           <PersonOutlinedIcon
             className="icon"
-            style={{
-              color: "crimson",
-              backgroundColor: "rgba(255, 0, 0, 0.2)",
-            }}
+            style={{ color: "crimson", backgroundColor: "rgba(255, 0, 0, 0.2)" }}
           />
         ),
       };
       break;
     case "order":
       data = {
-        title: "ORDERS",
+        title: "BOOKINGS",
         isMoney: false,
-        link: "View all orders",
+        link: "/bookings", // link to bookings datatable
         icon: (
           <ShoppingCartOutlinedIcon
             className="icon"
-            style={{
-              backgroundColor: "rgba(218, 165, 32, 0.2)",
-              color: "goldenrod",
-            }}
+            style={{ color: "goldenrod", backgroundColor: "rgba(218, 165, 32, 0.2)" }}
           />
         ),
       };
@@ -49,11 +40,11 @@ const Widget = ({ type }) => {
       data = {
         title: "EARNINGS",
         isMoney: true,
-        link: "View net earnings",
+        link: "/earnings", // optional route
         icon: (
           <MonetizationOnOutlinedIcon
             className="icon"
-            style={{ backgroundColor: "rgba(0, 128, 0, 0.2)", color: "green" }}
+            style={{ color: "green", backgroundColor: "rgba(0, 128, 0, 0.2)" }}
           />
         ),
       };
@@ -62,20 +53,17 @@ const Widget = ({ type }) => {
       data = {
         title: "BALANCE",
         isMoney: true,
-        link: "See details",
+        link: "/balance", // optional route
         icon: (
           <AccountBalanceWalletOutlinedIcon
             className="icon"
-            style={{
-              backgroundColor: "rgba(128, 0, 128, 0.2)",
-              color: "purple",
-            }}
+            style={{ color: "purple", backgroundColor: "rgba(128, 0, 128, 0.2)" }}
           />
         ),
       };
       break;
     default:
-      break;
+      return null;
   }
 
   return (
@@ -85,10 +73,12 @@ const Widget = ({ type }) => {
         <span className="counter">
           {data.isMoney && "$"} {amount}
         </span>
-        <span className="link">{data.link}</span>
+        <Link to={data.link} className="link">
+          {type === "user" ? "See all users" : type === "order" ? "View all Bookings" : "View details"}
+        </Link>
       </div>
       <div className="right">
-        <div className="percentage positive">
+        <div className={`percentage ${diff >= 0 ? "positive" : "negative"}`}>
           <KeyboardArrowUpIcon />
           {diff} %
         </div>

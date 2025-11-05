@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./mailList.css";
+import axios from "axios";
 
 const MailList = () => {
   const [email, setEmail] = useState("");
@@ -20,13 +21,11 @@ const MailList = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8801/api/subscribe", { // direct backend URL
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await res.json();
+      const { data } = await axios.post("http://localhost:8801/api/subscribe",
+        { email },
+        {
+          headers: { "Content-Type": "application/json" }
+        });
 
       if (!res.ok) throw new Error(data.message);
 

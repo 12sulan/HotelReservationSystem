@@ -20,7 +20,7 @@ export const verifyToken = (req, res, next) => {
 // Middleware: Check if user matches or is admin
 export const verifyUser = (req, res, next) => {
   verifyToken(req, res, () => {
-    console.log(req.user);
+    console.log("user detail", req.user, req.params);
     if (req.user?.id === req.params.id || req.user?.isAdmin) {
       next();
     } else {
