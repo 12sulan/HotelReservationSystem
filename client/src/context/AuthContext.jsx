@@ -21,9 +21,12 @@ const AuthReducer = (state, action) => {
         error: null,
       };
     case "LOGIN_SUCCESS":
-      localStorage.setItem("user", JSON.stringify(action.payload));
+      // Get isAdmin status from localStorage
+      const isAdmin = localStorage.getItem("isAdmin") === "true";
+      const userWithAdmin = { ...action.payload, isAdmin };
+      localStorage.setItem("user", JSON.stringify(userWithAdmin));
       return {
-        user: action.payload,
+        user: userWithAdmin,
         loading: false,
         error: null,
       };
@@ -35,6 +38,8 @@ const AuthReducer = (state, action) => {
       };
     case "LOGOUT":
       localStorage.removeItem("user");
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("isAdmin");
       return {
         user: null,
         loading: false,
