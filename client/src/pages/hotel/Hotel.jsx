@@ -68,52 +68,66 @@ const Hotel = () => {
   }
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <Header type="list" />
       {loading ? (
-        "Loading..."
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="animate-pulse text-gray-600">Loading...</div>
+        </div>
       ) : (
         <div className="hotelContainer">
           {open && (
             <div className="slider">
-              <FontAwesomeIcon
-                icon={faCircleXmark}
-                className="close"
-                onClick={() => setOpen(false)}
-              />
-              <FontAwesomeIcon
-                icon={faCircleArrowLeft}
-                className="arrow"
-                onClick={() => handleMove("l")}
-              />
-              <div className="sliderWrapper">
-                <img
-                  src={data.photos[slideNumber]}
-                  alt=""
-                  className="sliderImg"
-                />
+              <div className="fixed inset-0 bg-black bg-opacity-90 z-50">
+                <div className="relative w-full h-full">
+                  <FontAwesomeIcon
+                    icon={faCircleXmark}
+                    className="absolute top-4 right-4 text-4xl text-white opacity-75 hover:opacity-100 cursor-pointer transition-opacity z-50"
+                    onClick={() => setOpen(false)}
+                  />
+                  <div className="flex items-center justify-center h-full">
+                    <FontAwesomeIcon
+                      icon={faCircleArrowLeft}
+                      className="absolute left-4 text-4xl text-white opacity-75 hover:opacity-100 cursor-pointer transition-opacity"
+                      onClick={() => handleMove("l")}
+                    />
+                    <div className="sliderWrapper">
+                      <img
+                        src={data.photos[slideNumber]}
+                        alt={`Hotel view ${slideNumber + 1}`}
+                        className="max-w-[90vw] max-h-[90vh] object-contain"
+                      />
+                    </div>
+                    <FontAwesomeIcon
+                      icon={faCircleArrowRight}
+                      className="absolute right-4 text-4xl text-white opacity-75 hover:opacity-100 cursor-pointer transition-opacity"
+                      onClick={() => handleMove("r")}
+                    />
+                  </div>
+                </div>
               </div>
-              <FontAwesomeIcon
-                icon={faCircleArrowRight}
-                className="arrow"
-                onClick={() => handleMove("r")}
-              />
             </div>
           )}
           <div className="hotelWrapper">
-            <button className="bookNow">Reserve or Book Now!</button>
+            <button className="bookNow" onClick={handleClick}>
+              Reserve or Book Now!
+            </button>
             <h1 className="hotelTitle">{data.name}</h1>
             <div className="hotelAddress">
-              <FontAwesomeIcon icon={faLocationDot} />
+              <FontAwesomeIcon icon={faLocationDot} className="text-primary" />
               <span>{data.address || "Elton St 125 New York"}</span>
             </div>
-            <span className="hotelDistance">
-              Excellent location – {data.distance}m from Nawalparasi.
-            </span>
-            <span className="hotelPriceHighlight">
-              Book a stay over ${data.cheapestPrice} and get a free airport taxi!
-            </span>
+            <div className="flex flex-col gap-4 mt-4">
+              <span className="hotelDistance">
+                <span className="inline-block px-2 py-1 bg-green-50 text-green-700 rounded-full text-sm">
+                  Excellent location
+                </span>
+                {" – "}{data.distance}m from Nawalparasi.
+              </span>
+              <span className="hotelPriceHighlight">
+                Book a stay over ${data.cheapestPrice} and get a free airport taxi!
+              </span>
+            </div>
             <div className="hotelImages">
               {data.photos?.map((photo, i) => (
                 <div className="hotelImgWrapper" key={i}>
@@ -132,18 +146,32 @@ const Hotel = () => {
                 <p className="hotelDesc">{data.discrip}</p>
               </div>
               <div className="hotelDetailsPrice">
-                <h1>Perfect for a {days}-night stay!</h1>
-                <span>
-                  Located in the heart of the city, this property has an excellent
-                  location score of 9.8!
-                </span>
-                <h2>
-                  <b>
-                    ${days * data.cheapestPrice * (options?.room || 1)}
-                  </b>{" "}
-                  ({days} nights)
-                </h2>
-                <button onClick={handleClick}>Reserve or Book Now!</button>
+                <div className="space-y-4">
+                  <h1 className="text-xl font-semibold">Perfect for a {days}-night stay!</h1>
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 bg-green-50 rounded-full">
+                      <FontAwesomeIcon icon={faLocationDot} className="text-green-600" />
+                    </div>
+                    <span className="text-gray-600">
+                      Located in the heart of the city, this property has an
+                      <span className="font-semibold text-green-600"> excellent location score of 9.8!</span>
+                    </span>
+                  </div>
+                  <div className="border-t border-gray-100 pt-4">
+                    <h2 className="flex items-baseline gap-2">
+                      <span className="text-2xl font-bold text-primary">
+                        ${days * data.cheapestPrice * (options?.room || 1)}
+                      </span>
+                      <span className="text-gray-500">for {days} nights</span>
+                    </h2>
+                  </div>
+                  <button
+                    onClick={handleClick}
+                    className="w-full py-3 bg-primary hover:bg-primary-dark transition-colors rounded-lg text-white font-semibold shadow-sm hover:shadow-md"
+                  >
+                    Reserve or Book Now!
+                  </button>
+                </div>
               </div>
             </div>
           </div>

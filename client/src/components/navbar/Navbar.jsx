@@ -12,6 +12,8 @@ const Navbar = () => {
     navigate("/"); // Redirect to home after logout
   };
 
+  console.log("Navbar user:", user);
+
   return (
     <div className="navbar">
       <div className="navContainer">
@@ -22,6 +24,12 @@ const Navbar = () => {
         {user ? (
           <div className="navItems">
             <span className="username">Hi, {user.username}</span>
+
+            {user.isAdmin && (
+              <Link to="http://localhost:5174" className="navButton">
+                Admin Panel
+              </Link>
+            )}
 
             {/* My Bookings button */}
             <Link to="/my-bookings" className="navButton">

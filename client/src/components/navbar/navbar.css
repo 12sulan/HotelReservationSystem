@@ -1,37 +1,42 @@
 .navbar {
   width: 100%;
-  background: linear-gradient(135deg, #009688, #00796b);
-  color: white;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #1F2937;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.5);
   position: sticky;
   top: 0;
   z-index: 500;
+  transition: all 0.3s ease;
 }
 
 .navContainer {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 14px 24px;
+  padding: 16px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 72px;
 }
 
 .logo {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
-  color: white;
+  color: #1F2937;
   text-decoration: none;
-  letter-spacing: 0.5px;
-  transition: 0.3s ease;
+  letter-spacing: -0.025em;
+  transition: all 0.2s ease;
 }
 
 .logo:hover {
-  color: #a7ffeb;
+  color: #3B82F6;
 }
 
 .logo-highlight {
-  color: #a7ffeb;
+  color: #3B82F6;
+  font-weight: 800;
 }
 
 .navItems {
@@ -46,34 +51,43 @@
 }
 
 .navButton {
-  background-color: white;
-  color: #00796b;
-  padding: 8px 18px;
+  background-color: #F3F4F6;
+  color: #1F2937;
+  padding: 10px 20px;
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.9375rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .navButton:hover {
-  background-color: #a7ffeb;
-  color: #004d40;
+  background-color: #E5E7EB;
   transform: translateY(-1px);
 }
 
 .navButton.login {
-  background-color: #a7ffeb;
+  background-color: #3B82F6;
+  color: white;
+}
+
+.navButton.login:hover {
+  background-color: #2563EB;
 }
 
 .navButton.logout {
-  background-color: #e53935;
+  background-color: #EF4444;
   color: white;
 }
 
 .navButton.logout:hover {
-  background-color: #c62828;
+  background-color: #DC2626;
 }
 
 .navItems {
@@ -85,5 +99,5 @@
 .username {
   font-size: 16px;
   font-weight: 500;
-  color: #e0f2f1;
+  color: #3B82F6;
 }

@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import "./login.css";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
@@ -13,15 +13,15 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [validationError, setValidationError] = useState("");
 
-  const {  loading, error, dispatch } = useContext(AuthContext);
-  const navigate = useNavigate()
+  const { loading, error, dispatch } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setCredentials((prev) => ({
       ...prev,
       [e.target.id]: e.target.value,
     }));
-    setValidationError(""); 
+    setValidationError("");
   };
 
   const handleClick = async (e) => {
@@ -41,6 +41,9 @@ const Login = () => {
         localStorage.setItem("authToken", res.data.token);
       }
 
+      // Save isAdmin status in localStorage
+      localStorage.setItem("isAdmin", res.data.isAdmin);
+
       dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
       navigate("/")
     } catch (error) {
@@ -55,38 +58,58 @@ const Login = () => {
     <div className="Login">
       <div className="lcontainer">
         <h2 className="ltitle">Welcome Back</h2>
+        <p className="lsubtitle">Sign in to your luxury hotel account</p>
 
-        <input
-          type="text"
-          placeholder="Username"
-          id="username"
-          onChange={handleChange}
-          className="linput"
-        />
-
-        <div className="passwordField">
+        <div className="input-group">
           <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            id="password"
+            type="text"
+            placeholder="Username"
+            id="username"
             onChange={handleChange}
             className="linput"
+            autoComplete="username"
           />
+          <i className="input-icon fas fa-user"></i>
+        </div>
+
+        <div className="passwordField">
+          <div className="input-group">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              id="password"
+              onChange={handleChange}
+              className="linput"
+              autoComplete="current-password"
+            />
+            <i className="input-icon fas fa-lock"></i>
+          </div>
           <label className="showPassword">
             <input
               type="checkbox"
               onChange={() => setShowPassword((prev) => !prev)}
-            />{" "}
-            Show Password
+            />
+            <span>Show Password</span>
           </label>
         </div>
 
-        <button  onClick={handleClick} className="lbutton" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
+        <button onClick={handleClick} className="lbutton" disabled={loading}>
+          {loading ? (
+            <>
+              <span className="loading-spinner"></span>
+              <span>Signing in...</span>
+            </>
+          ) : (
+            "Sign In"
+          )}
         </button>
 
         {validationError && <span className="error">{validationError}</span>}
         {error && <span className="error">{error}</span>}
+
+        <p className="registerLink">
+          Don't have an account? <Link to="/register">Create one now</Link>
+        </p>
       </div>
     </div>
   );

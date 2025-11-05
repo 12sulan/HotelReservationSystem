@@ -55,7 +55,7 @@ const Header = ({ type }) => {
   };
 
   return (
-    <div className="header">
+    <div className={`header ${type === "list" ? "compact" : ""}`}>
       <div
         className={
           type === "list" ? "headerContainer listMode" : "headerContainer"

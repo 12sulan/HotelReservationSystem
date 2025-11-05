@@ -1,71 +1,80 @@
 .fp {
   width: 100%;
-  max-width: 1200px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 24px;
+  max-width: 1280px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 32px;
+  padding: 0 24px;
+  margin: 0 auto;
 }
 
 .fpItem {
-  width: 270px;
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .fpItem:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .fpImg {
   width: 100%;
-  height: 180px;
+  height: 240px;
   object-fit: cover;
+  border-radius: 16px 16px 0 0;
 }
 
 .fpName {
-  color: #004d40;
-  font-weight: 700;
-  font-size: 18px;
-  margin: 10px 0 4px 12px;
+  color: #1F2937;
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin: 20px 24px 8px;
+  letter-spacing: -0.025em;
+  line-height: 1.4;
 }
 
 .fpCity {
-  color: #666;
-  font-size: 14px;
-  margin-left: 12px;
+  color: #6B7280;
+  font-size: 1rem;
+  margin: 0 24px;
 }
 
 .fpPrice {
-  color: #00796b;
+  color: #3B82F6;
   font-weight: 600;
-  font-size: 16px;
-  margin: 6px 0 10px 12px;
+  font-size: 1.125rem;
+  margin: 16px 24px;
 }
 
 .fpRating {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-left: 12px;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin: 0 24px 20px;
+  margin-top: auto;
 }
 
 .fpRating button {
-  background-color: #009688;
+  background-color: #3B82F6;
   color: white;
   border: none;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
 }
 
 .fpRating span {
-  font-size: 14px;
-  color: #555;
+  font-size: 0.875rem;
+  color: #4B5563;
 }

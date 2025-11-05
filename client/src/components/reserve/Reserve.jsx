@@ -10,9 +10,11 @@ import { useNavigate } from "react-router-dom";
 
 const Reserve = ({ setOpen, hotelId }) => {
   const { data, loading, error } = useFetch(`/hotels/room/${hotelId}`);
-  const { dates } = useContext(SearchContext);
+  const { dates, options } = useContext(SearchContext);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [selectedRoomType, setSelectedRoomType] = useState(null);
+
   const [selectedRooms, setSelectedRooms] = useState([]);
 
   // Get all dates in range
@@ -26,6 +28,11 @@ const Reserve = ({ setOpen, hotelId }) => {
       date.setDate(date.getDate() + 1);
     }
     return list;
+  };
+
+  const calculateTotalPrice = (roomType) => {
+    if (!dates?.length) return 0;
+    return alldates.length * roomType.price * (options?.room || 1);
   };
 
   const alldates =
@@ -117,49 +124,189 @@ const Reserve = ({ setOpen, hotelId }) => {
   return (
     <div className="reserve">
       <div className="rContainer">
-        <FontAwesomeIcon
-          icon={faCircleXmark}
-          className="rClose"
-          onClick={() => setOpen(false)}
-        />
-        <span>Select your rooms :</span>
+        <button className="rClose" onClick={() => setOpen(false)}>
+          <FontAwesomeIcon icon={faCircleXmark} />
+        </button>
+
+        <div className="bookingProgress">
+          <div className={`progressStep ${!selectedRoomType ? 'active' : 'complete'}`}>
+            1. Select Room Type
+          </div>
+          <div className={`progressStep ${selectedRoomType ? 'active' : ''}`}>
+            2. Choose Your Room
+          </div>
+        </div>
 
         {rooms.length === 0 ? (
-          <p style={{ textAlign: "center", color: "#888" }}>
-            No rooms available for this hotel.
-          </p>
-        ) : (
-          rooms.map((item) => (
-            <div className="rItem" key={item._id}>
-              <div className="rItemInfo">
-                <div className="rTitle">{item.title}</div>
-                <div className="rDiscrip">{item.discrip}</div>
-                <div className="rMax">
-                  Max people: <b>{item.maxpeople}</b>
+          <div className="emptyState">
+            <div className="emptyIcon">🏠</div>
+            <h3>No Rooms Available</h3>
+            <p>Unfortunately, all rooms are booked for your selected dates.</p>
+          </div>
+        ) : !selectedRoomType ? (
+          // Step 1: Room Type Selection
+          <div className="roomTypeGrid">
+            {rooms.map((room) => (
+              <div
+                key={room._id}
+                className="roomTypeCard"
+                onClick={() => {
+                  setSelectedRoomType(room);
+                  // Find first available room and select it automatically
+                  const firstAvailableRoom = room.roomNumbers.find(roomNumber => isAvailable(roomNumber));
+                  if (firstAvailableRoom) {
+                    setSelectedRooms([firstAvailableRoom._id]);
+                  }
+                }}
+              >
+                <div className="roomTypeHeader">
+                  <h3>{room.title}</h3>
+                  <span className="roomPrice">
+                    Rs. {room.price.toLocaleString()}
+                    <span className="perNight">/night</span>
+                  </span>
                 </div>
-                <div className="rPrice">Rs. {item.price}</div>
-              </div>
 
-              <div className="rSelectRooms">
-                {item.roomNumbers?.map((roomNumber) => (
-                  <div className="room" key={roomNumber._id}>
-                    <label>{roomNumber.number}</label>
-                    <input
-                      type="checkbox"
-                      value={roomNumber._id}
-                      onChange={handleSelect}
-                      disabled={!isAvailable(roomNumber)}
-                    />
+                <div className="roomFeatures">
+                  <div className="featureItem">
+                    <span className="featureIcon">👥</span>
+                    Up to {room.maxpeople} guests
                   </div>
-                ))}
+                  <div className="featureItem">
+                    <span className="featureIcon">🛏️</span>
+                    {room.roomNumbers.length} rooms available
+                  </div>
+                </div>
+
+                <p className="roomDescription">{room.discrip}</p>
+
+                <div className="roomTypeFooter">
+                  <div className="totalPrice">
+                    <span>Total for {alldates.length} nights</span>
+                    <strong>Rs. {calculateTotalPrice(room).toLocaleString()}</strong>
+                  </div>
+                  <button className="selectButton">
+                    Select Room Type
+                    <span className="arrow">→</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          // Step 2: Specific Room Selection
+          <div className="roomSelectionStep">
+            <button
+              className="backButton"
+              onClick={() => setSelectedRoomType(null)}
+            >
+              ← Back to Room Types
+            </button>
+
+            <div className="selectedRoomType">
+              <h3>{selectedRoomType.title}</h3>
+              <div className="selectedRoomPrice">
+                Rs. {selectedRoomType.price.toLocaleString()}/night
               </div>
             </div>
-          ))
+
+            <div className="roomGrid">
+              {selectedRoomType.roomNumbers?.map((roomNumber) => {
+                const isRoomAvailable = isAvailable(roomNumber);
+                return (
+                  <label
+                    className={`roomCard ${isRoomAvailable ? 'available' : 'unavailable'
+                      } ${selectedRooms.includes(roomNumber._id) ? 'selected' : ''
+                      }`}
+                    key={roomNumber._id}
+                  >
+                    <div className="roomCardContent">
+                      <div className="roomNumber">Room {roomNumber.number}</div>
+                      <div className={`roomStatus ${isRoomAvailable ? 'available' : 'unavailable'}`}>
+                        {isRoomAvailable ? 'Available' : 'Booked'}
+                      </div>
+                      {isRoomAvailable && (
+                        <input
+                          type="checkbox"
+                          value={roomNumber._id}
+                          onChange={handleSelect}
+                          checked={selectedRooms.includes(roomNumber._id)}
+                          className="roomCheckbox"
+                        />
+                      )}
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
         )}
 
-        <button onClick={handleReserve} className="rButton">
-          Reserve now!
-        </button>
+        {selectedRoomType && (
+          <div className="bookingSummary">
+            <div className="summaryHeader">
+              <h3>Booking Summary</h3>
+              <div className="summaryDates">
+                {dates?.length > 0 ? (
+                  <>
+                    <span className="dateRange">
+                      {new Date(dates[0].startDate).toLocaleDateString()} - {new Date(dates[0].endDate).toLocaleDateString()}
+                    </span>
+                    <span className="nightCount">{alldates.length} nights</span>
+                  </>
+                ) : (
+                  <span className="warning">Please select your dates first</span>
+                )}
+              </div>
+            </div>
+
+            <div className="summaryContent">
+              <div className="summaryRow">
+                <span>Room Type</span>
+                <span>{selectedRoomType.title}</span>
+              </div>
+              <div className="summaryRow">
+                <span>Number of Rooms</span>
+                <span>{selectedRooms.length} selected</span>
+              </div>
+              <div className="summaryRow">
+                <span>Price per Night</span>
+                <span>Rs. {selectedRoomType.price.toLocaleString()}</span>
+              </div>
+              {selectedRooms.length > 0 && dates?.length > 0 && (
+                <div className="summaryTotal">
+                  <span>Total Amount</span>
+                  <span>Rs. {(selectedRoomType.price * selectedRooms.length * alldates.length).toLocaleString()}</span>
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={handleReserve}
+              className="confirmButton"
+              disabled={selectedRooms.length === 0 || !dates?.length}
+            >
+              {!dates?.length
+                ? "Please Select Dates First"
+                : selectedRooms.length === 0
+                  ? "Select a Room to Continue"
+                  : `Confirm Booking • Rs. ${(selectedRoomType.price * selectedRooms.length * alldates.length).toLocaleString()}`}
+            </button>
+
+            {selectedRooms.length > 0 && dates?.length > 0 && (
+              <div className="bookingNotes">
+                <div className="noteItem">
+                  <span className="noteIcon">✓</span>
+                  Free cancellation before 24 hours
+                </div>
+                <div className="noteItem">
+                  <span className="noteIcon">🔒</span>
+                  Secure payment process
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

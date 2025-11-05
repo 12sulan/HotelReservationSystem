@@ -93,44 +93,56 @@ const Register = () => {
     return (
         <div className="registerContainer">
             <form className="registerForm" onSubmit={handleSubmit}>
-                <h2>Create Account</h2>
+                <h2 className="registerTitle">Join Our Community</h2>
+                <p className="registerSubtitle">Create your luxury hotel account</p>
 
-                <label>Username</label>
-                <input
-                    type="text"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter username"
-                />
+                <div className="input-group">
+                    <i className="input-icon fas fa-user"></i>
+                    <input
+                        type="text"
+                        name="username"
+                        value={formData.username}
+                        onChange={handleChange}
+                        required
+                        placeholder="Choose a username"
+                        className="register-input"
+                        autoComplete="username"
+                    />
+                </div>
 
-                <label>Email</label>
-                <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter email"
-                />
+                <div className="input-group">
+                    <i className="input-icon fas fa-envelope"></i>
+                    <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter your email"
+                        className="register-input"
+                        autoComplete="email"
+                    />
+                </div>
 
-                <label>Password</label>
-                <div className="passwordWrapper">
+                <div className="input-group">
+                    <i className="input-icon fas fa-lock"></i>
                     <input
                         type={showPassword ? "text" : "password"}
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
                         required
-                        placeholder="Enter password"
+                        placeholder="Create a password"
+                        className="register-input"
+                        autoComplete="new-password"
                     />
                     <button
                         type="button"
                         className="showPasswordBtn"
                         onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
                     >
-                        {showPassword ? "Hide" : "Show"}
+                        <i className={`fas fa-eye${showPassword ? '-slash' : ''}`}></i>
                     </button>
                 </div>
 
@@ -165,15 +177,46 @@ const Register = () => {
                     </div>
                 )}
 
+                <div className="passwordSecurityCard">
+                    <p className="strengthLabel">Password Strength: {strengthLabels[strength]}</p>
+                    <div className="strengthMeter">
+                        <div
+                            className="strengthBar"
+                            style={{
+                                width: `${(strength / 4) * 100}%`,
+                                backgroundColor: strengthColors[strength],
+                            }}
+                        ></div>
+                    </div>
+                    <ul className="passwordChecklist">
+                        <li className={isLongEnough(formData.password) ? "valid" : "invalid"}>
+                            At least 8 characters
+                        </li>
+                        <li className={hasTwoNumbers(formData.password) ? "valid" : "invalid"}>
+                            At least 2 numbers
+                        </li>
+                        <li className={hasLetter(formData.password) ? "valid" : "invalid"}>
+                            At least 1 letter
+                        </li>
+                    </ul>
+                </div>
+
                 <button type="submit" className="registerButton" disabled={loading}>
-                    {loading ? "Please wait..." : "Register"}
+                    {loading ? (
+                        <>
+                            <span className="loading-spinner"></span>
+                            <span>Creating account...</span>
+                        </>
+                    ) : (
+                        "Create Account"
+                    )}
                 </button>
 
                 {message && <p className="successMessage">{message}</p>}
                 {error && <p className="errorMessage">{error}</p>}
 
                 <p className="loginRedirect">
-                    Already have an account? <Link to="/login">Login here</Link>.
+                    Already have an account? <Link to="/login">Sign in here</Link>
                 </p>
             </form>
         </div>

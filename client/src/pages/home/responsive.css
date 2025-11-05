@@ -1,0 +1,50 @@
+/* Mobile First Responsive Design */
+@media (max-width: 768px) {
+    .featured {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 0 16px;
+    }
+
+    .featuredItem {
+        height: 300px;
+    }
+
+    .fp {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 0 16px;
+    }
+
+    .headerSearch {
+        flex-direction: column;
+        gap: 8px;
+        padding: 16px;
+    }
+
+    .headerSearchItem {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #E5E7EB;
+        padding: 12px 0;
+    }
+
+    .headerSearchItem:last-child {
+        border-bottom: none;
+    }
+
+    .homeTitle {
+        font-size: 1.75rem;
+        padding: 0 16px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .featured {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .fp {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
