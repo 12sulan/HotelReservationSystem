@@ -1,25 +1,13 @@
-import User from "../models/User.js";
-import bcrypt from "bcryptjs"
-import createError from '../utils/error.js';
-import jwt from "jsonwebtoken";
 
+import User from "../models/User.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export const register = async (req, res, next) => {
   try {
-    const existingUser = await User.findOne({
-      $or: [
-        { username: req.body.username },
-        { email: req.body.email }
-      ]
-    });
-
-    if (existingUser) {
-      return res.status(400).json({ message: "Username or Email already exists." });
-    }
-
-
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(req.body.password, salt);
+
     const newUser = new User({
       username: req.body.username,
       email: req.body.email,
@@ -27,7 +15,22 @@ export const register = async (req, res, next) => {
     });
 
     await newUser.save();
-    res.status(201).send("User has been created.");
+
+  
+    const token = jwt.sign(
+      { id: newUser._id, isAdmin: newUser.isAdmin },
+      process.env.JWT
+    );
+
+    const { password, isAdmin, ...otherDetails } = newUser._doc;
+
+    res
+      .cookie("access_token", token, {
+        httpOnly: true,
+        sameSite: "lax",
+      })
+      .status(200)
+      .json({ details: { ...otherDetails }, isAdmin });
   } catch (err) {
     next(err);
   }
@@ -36,20 +39,27 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     const user = await User.findOne({ username: req.body.username });
-    if (!user) return next(createError(404, "Username not found!"));
+    if (!user) return next({ status: 404, message: "User not found!" });
 
     const isPasswordCorrect = await bcrypt.compare(
       req.body.password,
-      user.password);
-
+      user.password
+    );
     if (!isPasswordCorrect)
-      return next(createError(400, "Wrong password or username!"));
-    const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT);
+      return next({ status: 400, message: "Wrong password or username!" });
+
+    const token = jwt.sign(
+      { id: user._id, isAdmin: user.isAdmin },
+      process.env.JWT
+    );
 
     const { password, isAdmin, ...otherDetails } = user._doc;
-    res.cookie("access_token", token, {
-      httpOnly: true,
-    })
+
+    res
+      .cookie("access_token", token, {
+        httpOnly: true,
+        sameSite: "lax",
+      })
       .status(200)
       .json({ details: { ...otherDetails }, isAdmin });
   } catch (err) {

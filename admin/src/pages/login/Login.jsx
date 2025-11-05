@@ -36,12 +36,14 @@ const Login = () => {
     dispatch({ type: "LOGIN_START" });
 
     try {
-      const res = await axios.post("http://localhost:8801/api/auth/login", credentials);
+      const res = await axios.post("http://localhost:8801/api/auth/login", credentials, {
+        withCredentials: true,
+      });
 
-      if (res.data.isAdmin) {
+      if (res.data?.isAdmin) {
         localStorage.setItem("authToken", res.data.token);
-        dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
-        navigate("/"); 
+        dispatch({ type: "LOGIN_SUCCESS", payload: { ...(res.data.details), isAdmin: true } });
+        navigate("/");
       } else {
         dispatch({
           type: "LOGIN_FAILURE",

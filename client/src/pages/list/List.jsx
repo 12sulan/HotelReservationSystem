@@ -12,9 +12,13 @@ const List = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Get the city from URL search params
+  const searchParams = new URLSearchParams(location.search);
+  const cityFromUrl = searchParams.get('city');
+
   // Use fallback state if no navigation state is passed
   const state = location.state || {
-    destination: "",
+    destination: cityFromUrl || "",
     dates: [{ startDate: new Date(), endDate: new Date(), key: "selection" }],
     options: { adult: 1, children: 0, room: 1 },
   };

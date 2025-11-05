@@ -18,7 +18,7 @@ const Featured = () => {
         <>
           <div className="featuredItem" onClick={() => handleClick("nawalparasi")}>
             <img
-              src="https://i.ytimg.com/vi/xElZKwcrlWw/hq720.jpg"
+                src="https://q-xx.bstatic.com/xdata/images/hotel/840x460/467466070.jpg?k=20430c4ffea931945c05ee9ca668fa6c4a4a7a80c892067034110b07b453cc47&o="
               alt=""
               className="featuredImg"
             />
@@ -30,7 +30,7 @@ const Featured = () => {
 
           <div className="featuredItem" onClick={() => handleClick("chitwan")}>
             <img
-              src="https://cf.bstatic.com/xdata/images/city/max500/690334.webp?k=b99df435f06a15a1568ddd5f55d239507c0156985577681ab91274f917af6dbb&o="
+                src="https://i.pinimg.com/736x/08/21/c8/0821c8aa50b26cfbf50af3d71ec5a7a7.jpg"
               alt=""
               className="featuredImg"
             />
@@ -42,7 +42,7 @@ const Featured = () => {
 
           <div className="featuredItem" onClick={() => handleClick("butwal")}>
             <img
-              src="https://cf.bstatic.com/xdata/images/city/max500/689422.webp?k=2595c93e7e067b9ba95f90713f80ba6e5fa88a66e6e55600bd27a5128808fdf2&o="
+                src="https://nepaltourismhub.com/wp-content/uploads/2020/01/87797d603fb2fb7ab535d8f1c5613ec1.jpg"
               alt=""
               className="featuredImg"
             />

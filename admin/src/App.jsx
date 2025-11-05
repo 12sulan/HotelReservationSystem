@@ -4,7 +4,7 @@ import List from "./pages/list/List";
 import Single from "./pages/single/Single";
 import New from "./pages/new/New";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { productInputs, userInputs } from "./formSource";
+import { userInputs, hotelInputs, roomInputs } from "./formSource";
 import "./style/dark.scss";
 import { useContext } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
@@ -15,9 +15,8 @@ function App() {
   const { user } = useContext(AuthContext);
 
   const ProtectedRoute = ({ children }) => {
-    if (!user) {
-      return <Navigate to="/login" />;
-    }
+    // console.log("ProtectedRoute check:", user);
+    if (!user || !user.isAdmin) return <Navigate to="/login" />;
     return children;
   };
 
@@ -27,6 +26,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
 
+          {/* Home */}
           <Route
             index
             element={
@@ -36,11 +36,12 @@ function App() {
             }
           />
 
+          {/* USERS */}
           <Route
             path="/users"
             element={
               <ProtectedRoute>
-                <List />
+                <List type="users" />
               </ProtectedRoute>
             }
           />
@@ -48,7 +49,7 @@ function App() {
             path="/users/:userId"
             element={
               <ProtectedRoute>
-                <Single />
+                <Single type="users" />
               </ProtectedRoute>
             }
           />
@@ -56,32 +57,77 @@ function App() {
             path="/users/new"
             element={
               <ProtectedRoute>
-                <New inputs={userInputs} title="Add New User" />
+                <New inputs={userInputs} title="Add New User" type="users" />
               </ProtectedRoute>
             }
           />
 
+          {/* HOTELS */}
           <Route
-            path="/products"
+            path="/hotels"
             element={
               <ProtectedRoute>
-                <List />
+                <List type="hotels" />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/products/:productId"
+            path="/hotels/:hotelId"
             element={
               <ProtectedRoute>
-                <Single />
+                <Single type="hotels" />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/products/new"
+            path="/hotels/new"
             element={
               <ProtectedRoute>
-                <New inputs={productInputs} title="Add New Product" />
+                <New inputs={hotelInputs} title="Add New Hotel" type="hotels" />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ROOMS */}
+          <Route
+            path="/rooms"
+            element={
+              <ProtectedRoute>
+                <List type="rooms" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/rooms/:roomId"
+            element={
+              <ProtectedRoute>
+                <Single type="rooms" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/rooms/new"
+            element={
+              <ProtectedRoute>
+                <New inputs={roomInputs} title="Add New Room" type="rooms" />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* BOOKINGS */}
+          <Route
+            path="/bookings"
+            element={
+              <ProtectedRoute>
+                <List type="bookings" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/bookings/:bookingId"
+            element={
+              <ProtectedRoute>
+                <Single type="bookings" />
               </ProtectedRoute>
             }
           />
@@ -92,3 +138,4 @@ function App() {
 }
 
 export default App;
+

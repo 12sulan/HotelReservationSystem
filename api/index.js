@@ -6,18 +6,27 @@ import authRoute from "./routes/auth.js";
 import usersRoute from "./routes/users.js";
 import hotelsRoute from "./routes/hotels.js";
 import roomsRoute from "./routes/rooms.js";
+import bookingsRoute from "./routes/bookings.js";
+
 import { errorHandler } from "./middlewares/errorHandler.js";
 import cookieParser from "cookie-parser";
 import subscribeRoute from "./routes/subscribe.js";
-
 import cors from "cors";
 
 dotenv.config();
 
 const app = express();
+const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
+
 app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true, 
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
 }));
 
 
@@ -52,6 +61,7 @@ app.use((req, res, next) => {
 
 //  Routes
 app.use("/api/auth", authRoute);
+app.use("/api/bookings", bookingsRoute);
 app.use("/api/users", usersRoute);
 app.use("/api/hotels", hotelsRoute);
 app.use("/api/rooms", roomsRoute);

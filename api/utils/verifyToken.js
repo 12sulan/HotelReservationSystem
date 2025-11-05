@@ -3,7 +3,9 @@ import createError from "../utils/error.js";
 
 // Middleware: Verify the JWT token
 export const verifyToken = (req, res, next) => {
+  console.log(req.cookies);
   const token = req.cookies.access_token;
+  console.log("Verifying token:", token);
   if (!token) {
     return next(createError(401, "You are not authenticated!"));
   }
@@ -18,6 +20,7 @@ export const verifyToken = (req, res, next) => {
 // Middleware: Check if user matches or is admin
 export const verifyUser = (req, res, next) => {
   verifyToken(req, res, () => {
+    console.log(req.user);
     if (req.user?.id === req.params.id || req.user?.isAdmin) {
       next();
     } else {

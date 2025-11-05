@@ -2,58 +2,181 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 80vh;
-    background-color: #f5f5f5;
-    padding: 20px;
+    height: 90vh;
+    background: linear-gradient(135deg, #a7ffeb, #009688);
 }
 
 .registerForm {
     background-color: white;
-    padding: 30px 40px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 320px;
+    padding: 40px 50px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
+    width: 380px;
+    gap: 14px;
 }
 
 .registerForm h2 {
     text-align: center;
+    color: #00796b;
     margin-bottom: 20px;
-    color: #333;
 }
 
 .registerForm label {
-    margin-bottom: 6px;
     font-weight: 600;
-    color: #555;
+    color: #333;
 }
 
 .registerForm input {
-    padding: 10px;
-    margin-bottom: 16px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
     outline: none;
-    transition: border-color 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .registerForm input:focus {
-    border-color: #007bff;
+    border-color: #00a86b;
+    box-shadow: 0 0 5px rgba(0, 168, 107, 0.3);
 }
 
 .registerButton {
-    background-color: #007bff;
+    background-color: #00a86b;
     color: white;
-    padding: 12px;
-    font-weight: 600;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: 0.3s ease;
 }
 
 .registerButton:hover {
-    background-color: #0056b3;
+    background-color: #00796b;
+}
+
+.successMessage {
+    color: #00c853;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.errorMessage {
+    color: #ff5252;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.loginRedirect {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.loginRedirect a {
+    color: #00796b;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.loginRedirect a:hover {
+    text-decoration: underline;
+}
+
+.passwordWrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.passwordWrapper input {
+    flex: 1;
+    padding-right: 80px;
+}
+
+.showPasswordBtn {
+    position: absolute;
+    right: 8px;
+    border: none;
+    background: none;
+    color: #00796b;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.showPasswordBtn:hover {
+    color: #004d40;
+}
+
+.passwordSecurityCard {
+    margin-top: 10px;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f7f7f7;
+}
+
+.strengthMeter {
+    width: 100%;
+    height: 6px;
+    background-color: #eee;
+    border-radius: 4px;
+    margin-top: 6px;
+    overflow: hidden;
+    transition: 0.3s ease;
+}
+
+.strengthBar {
+    height: 100%;
+    transition: width 0.4s ease, background-color 0.4s ease;
+    border-radius: 4px;
+}
+
+.strengthLabel {
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 4px;
+    text-align: right;
+    transition: color 0.3s ease;
+}
+
+.passwordChecklist {
+    margin: 8px 0 12px 0;
+    padding-left: 20px;
+    font-size: 13px;
+    list-style: none;
+}
+
+.passwordChecklist li {
+    margin-bottom: 4px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.passwordChecklist li::before {
+    content: "✖";
+    position: absolute;
+    left: 0;
+    color: #ff5252;
+}
+
+.passwordChecklist li.valid::before {
+    content: "✔";
+    color: #4caf50;
+}
+
+.passwordChecklist li.valid {
+    color: #4caf50;
+}
+
+.passwordChecklist li.invalid {
+    color: #ff5252;
+}
+
+.registerButton[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
 }

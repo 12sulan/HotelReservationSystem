@@ -1,77 +1,142 @@
+// ===============================
+// USER INPUTS
+// ===============================
 export const userInputs = [
-    {
-      id: 1,
-      label: "Username",
-      type: "text",
-      placeholder: "john_doe",
-    },
-    {
-      id: 2,
-      label: "Name and surname",
-      type: "text",
-      placeholder: "John Doe",
-    },
-    {
-      id: 3,
-      label: "Email",
-      type: "mail",
-      placeholder: "john_doe@gmail.com",
-    },
-    {
-      id: 4,
-      label: "Phone",
-      type: "text",
-      placeholder: "+1 234 567 89",
-    },
-    {
-      id: 5,
-      label: "Password",
-      type: "password",
-    },
-    {
-      id: 6,
-      label: "Address",
-      type: "text",
-      placeholder: "Elton St. 216 NewYork",
-    },
-    {
-      id: 7,
-      label: "Country",
-      type: "text",
-      placeholder: "USA",
-    },
-  ];
-  
-  export const productInputs = [
-    {
-      id: 1,
-      label: "Title",
-      type: "text",
-      placeholder: "Apple Macbook Pro",
-    },
-    {
-      id: 2,
-      label: "Description",
-      type: "text",
-      placeholder: "Description",
-    },
-    {
-      id: 3,
-      label: "Category",
-      type: "text",
-      placeholder: "Computers",
-    },
-    {
-      id: 4,
-      label: "Price",
-      type: "text",
-      placeholder: "100",
-    },
-    {
-      id: 5,
-      label: "Stock",
-      type: "text",
-      placeholder: "in stock",
-    },
-  ];
-  
+  {
+    id: "username",
+    label: "Username",
+    type: "text",
+    placeholder: "john_doe",
+  },
+  {
+    id: "name",
+    label: "Full Name",
+    type: "text",
+    placeholder: "John Doe",
+  },
+  {
+    id: "email",
+    label: "Email",
+    type: "email",
+    placeholder: "john_doe@gmail.com",
+  },
+  {
+    id: "phone",
+    label: "Phone",
+    type: "text",
+    placeholder: "+977 9812345678",
+  },
+  {
+    id: "password",
+    label: "Password",
+    type: "password",
+    placeholder: "••••••••",
+  },
+  {
+    id: "address",
+    label: "Address",
+    type: "text",
+    placeholder: "Gaindakot-1, Nawalparasi",
+  },
+  {
+    id: "country",
+    label: "Country",
+    type: "text",
+    placeholder: "Nepal",
+  },
+];
+
+// ===============================
+// HOTEL INPUTS
+// ===============================
+export const hotelInputs = [
+  {
+    id: "name",
+    label: "Hotel Name",
+    type: "text",
+    placeholder: "Hotel Sunshine",
+  },
+  {
+    id: "type",
+    label: "Type",
+    type: "text",
+    placeholder: "Hotel / Apartment / Resort",
+  },
+  {
+    id: "city",
+    label: "City",
+    type: "text",
+    placeholder: "Pokhara",
+  },
+  {
+    id: "address",
+    label: "Address",
+    type: "text",
+    placeholder: "Lakeside Road, Pokhara",
+  },
+  {
+    id: "distance",
+    label: "Distance from City Center",
+    type: "text",
+    placeholder: "500m",
+  },
+  {
+    id: "title",
+    label: "Title",
+    type: "text",
+    placeholder: "Experience comfort and luxury",
+  },
+  {
+    id: "desc",
+    label: "Description",
+    type: "text",
+    placeholder: "Beautiful lakeside hotel with mountain views",
+  },
+  {
+    id: "price",
+    label: "Starting Price (NPR)",
+    type: "number",
+    placeholder: "4000",
+  },
+  {
+    id: "featured",
+    label: "Featured",
+    type: "checkbox",
+  },
+];
+
+// ===============================
+// ROOM INPUTS
+// ===============================
+export const roomInputs = [
+  {
+    id: "title",
+    label: "Room Title",
+    type: "text",
+    placeholder: "Deluxe Double Room",
+  },
+  {
+    id: "price",
+    label: "Price per Night (NPR)",
+    type: "number",
+    placeholder: "3000",
+  },
+  {
+    id: "maxPeople",
+    label: "Max People",
+    type: "number",
+    placeholder: "2",
+  },
+  {
+    id: "desc",
+    label: "Description",
+    type: "text",
+    placeholder: "Spacious room with attached bathroom and balcony",
+  },
+  {
+    id: "roomNumbers",
+    label: "Room Numbers",
+    type: "text",
+    placeholder: "e.g. 101, 102, 103",
+  },
+];

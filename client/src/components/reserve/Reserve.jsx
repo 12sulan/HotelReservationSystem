@@ -4,22 +4,23 @@ import "./reserve.css";
 import useFetch from "../../hooks/useFetch";
 import { useContext, useState } from "react";
 import { SearchContext } from "../../context/SearchContext";
+import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const Reserve = ({ setOpen, hotelId }) => {
-  const [selectedRooms, setSelectedRooms] = useState([]);
   const { data, loading, error } = useFetch(`/hotels/room/${hotelId}`);
   const { dates } = useContext(SearchContext);
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [selectedRooms, setSelectedRooms] = useState([]);
 
-  // 🧭 helper to get all dates in range
+  // Get all dates in range
   const getDatesInRange = (startDate, endDate) => {
     const start = new Date(startDate);
     const end = new Date(endDate);
     const date = new Date(start.getTime());
     let list = [];
-
     while (date <= end) {
       list.push(new Date(date).getTime());
       date.setDate(date.getDate() + 1);
@@ -27,7 +28,6 @@ const Reserve = ({ setOpen, hotelId }) => {
     return list;
   };
 
-  // ✅ Safely compute dates (avoid undefined errors)
   const alldates =
     Array.isArray(dates) && dates.length > 0
       ? getDatesInRange(dates[0].startDate, dates[0].endDate)
@@ -35,11 +35,9 @@ const Reserve = ({ setOpen, hotelId }) => {
 
   const isAvailable = (roomNumber) => {
     if (!roomNumber?.unavailableDates) return true;
-
-    const isFound = roomNumber.unavailableDates.some((date) =>
+    return !roomNumber.unavailableDates.some((date) =>
       alldates.includes(new Date(date).getTime())
     );
-    return !isFound;
   };
 
   const handleSelect = (e) => {
@@ -50,41 +48,70 @@ const Reserve = ({ setOpen, hotelId }) => {
     );
   };
 
-  const handleClick = async () => {
-    if (!selectedRooms || selectedRooms.length === 0) {
-      alert("Please select at least one room to reserve.");
+  const handleReserve = async () => {
+    if (!user) return alert("You must be logged in to reserve!");
+
+    if (selectedRooms.length === 0) {
+      alert("Please select at least one room.");
       return;
     }
 
-    if (!alldates || alldates.length === 0) {
-      alert("Please select valid dates before reserving.");
+    if (!alldates.length) {
+      alert("Please select valid dates.");
       return;
     }
 
     try {
+      // 1️⃣ Update room availability for each room
       await Promise.all(
         selectedRooms.map((roomId) =>
-          axios.put(`http://localhost:8801/api/rooms/availability/${roomId}`, {
-            dates: alldates,
-          })
+          axios.put(
+            `http://localhost:8801/api/rooms/availability/${roomId}`,
+            { dates: alldates }
+          )
         )
       );
-      alert("Room availability successfully updated!");
-      navigate("/");
+
+      // 2️⃣ Calculate total price
+      let totalPrice = 0;
+      selectedRooms.forEach((roomId) => {
+        data.forEach((room) => {
+          const found = room.roomNumbers.find((r) => r._id === roomId);
+          if (found) totalPrice += room.price;
+        });
+      });
+      totalPrice *= alldates.length; // number of nights
+
+      // 3️⃣ Create booking
+      const bookingData = {
+        hotelId,
+        roomNumbers: selectedRooms,
+        startDate: dates[0].startDate,
+        endDate: dates[0].endDate,
+        total: totalPrice,
+      };
+
+      await axios.post(
+        "http://localhost:8801/api/bookings",
+        bookingData,
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+          withCredentials: true
+        },
+      );
+
+      alert("Booking successful!");
+      setOpen(false);
+      navigate("/my-bookings"); // redirect to bookings page
     } catch (err) {
-      console.error("Error updating room availability:", err);
-      alert("Failed to update availability.");
+      console.error("Booking error:", err.response || err);
+      alert(err.response?.data?.message || "Booking failed.");
     }
   };
 
-  // ✅ Log what backend sends for debugging
-  console.log("Reserve data from backend:", data);
-
-  // ✅ Handle loading and error states gracefully
   if (loading) return <div className="reserve">Loading rooms...</div>;
   if (error) return <div className="reserve">Failed to load rooms.</div>;
 
-  // ✅ Ensure we always have an array before mapping
   const rooms = Array.isArray(data) ? data : [];
 
   return (
@@ -130,7 +157,7 @@ const Reserve = ({ setOpen, hotelId }) => {
           ))
         )}
 
-        <button onClick={handleClick} className="rButton">
+        <button onClick={handleReserve} className="rButton">
           Reserve now!
         </button>
       </div>
