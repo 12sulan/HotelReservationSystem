@@ -12,35 +12,26 @@ const PaymentSuccess = () => {
     useEffect(() => {
         const verifyPayment = async () => {
             try {
-                // Get the encoded data from URL
                 const params = new URLSearchParams(location.search);
-                const data = JSON.parse(atob(params.get('data')));
-
-                // Get the base64 encoded data from URL and decode it
                 const base64Data = params.get('data');
-                if (!base64Data) {
-                    throw new Error('No payment data received');
-                }
+                if (!base64Data) throw new Error('No payment data received');
 
                 const decodedData = JSON.parse(atob(base64Data));
 
-                // Verify signature from eSewa
                 const {
-                    transaction_code,
-                    status,
-                    total_amount,
                     transaction_uuid,
-                    product_code,
-                    signature
+                    total_amount,
                 } = decodedData;
 
                 // Verify payment with backend
-                const response = await axios.get(
+                const verifyRes = await axios.get(
                     `http://localhost:8801/api/esewa/verify/${transaction_uuid}?total_amount=${total_amount}`,
                     { withCredentials: true }
-                ); if (response.data.success) {
-                    // Payment was successful, update room availability
-                    const bookingId = data.transaction_uuid.split('-')[0];
+                );
+
+                if (verifyRes.data.success) {
+                    // ✅ Update booking status after successful verification
+                    const bookingId = transaction_uuid.split('-')[0];
                     await axios.put(
                         `http://localhost:8801/api/bookings/${bookingId}/status`,
                         { status: 'confirmed' },
@@ -48,8 +39,11 @@ const PaymentSuccess = () => {
                     );
 
                     setLoading(false);
+                } else {
+                    throw new Error('Verification failed');
                 }
             } catch (err) {
+                console.error('Payment verification error:', err);
                 setError('Payment verification failed. Please contact support.');
                 setLoading(false);
             }
