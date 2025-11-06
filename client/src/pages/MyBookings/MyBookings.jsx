@@ -3,12 +3,27 @@ import { AuthContext } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
 import "./myBookings.css";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faHotel,
+    faCalendarDays,
+    faMoneyBill,
+    faSpinner,
+    faSuitcase,
+    faExclamationTriangle,
+    faCalendarCheck,
+    faCalendarXmark,
+    faUsers
+} from "@fortawesome/free-solid-svg-icons";
+import Navbar from "../../components/navbar/Navbar";
 
 const MyBookings = () => {
     const { user } = useContext(AuthContext);
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [cancelId, setCancelId] = useState(null);
+    const [showCancelModal, setShowCancelModal] = useState(false);
+    const [selectedBooking, setSelectedBooking] = useState(null);
+    const [filter, setFilter] = useState("all");
 
     useEffect(() => {
         const fetchBookings = async () => {
@@ -31,84 +46,174 @@ const MyBookings = () => {
         if (user) fetchBookings();
     }, [user]);
 
-    const handleCancel = async (id) => {
+    const handleCancelClick = (booking) => {
+        setSelectedBooking(booking);
+        setShowCancelModal(true);
+    };
+
+    const handleConfirmCancel = async () => {
+        if (!selectedBooking) return;
+
         try {
-            const response = await axios.delete(`http://localhost:8801/api/bookings/${id}`, {
-                headers: { "Content-Type": "application/json" },
-                withCredentials: true
-            });
-            if (response.status === 200) {
-                setBookings(bookings.filter((b) => b._id !== id));
-                setCancelId(null);
-            } else {
-                alert("Failed to cancel booking");
-            }
-        } catch (err) {
-            console.error(err);
+            await axios.delete(
+                `http://localhost:8801/api/bookings/${selectedBooking._id}`,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true
+                }
+            );
+            setBookings(bookings.filter((b) => b._id !== selectedBooking._id));
+            setShowCancelModal(false);
+            setSelectedBooking(null);
+        } catch (error) {
+            console.error("Error cancelling booking:", error);
         }
     };
 
-    if (loading) return <div className="loading">Loading your bookings...</div>;
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        });
+    };
+
+    const filteredBookings = bookings.filter((booking) => {
+        if (filter === "all") return true;
+        const now = new Date();
+        const checkInDate = new Date(booking.checkInDate);
+        return filter === "upcoming"
+            ? checkInDate > now
+            : checkInDate <= now;
+    });
+
+    const getBookingStatus = (booking) => {
+        const now = new Date();
+        const checkInDate = new Date(booking.checkInDate);
+        return checkInDate > now ? "upcoming" : "past";
+    };
+
+    if (loading) {
+        return (
+            <>
+                <Navbar />
+                <div className="loadingState">
+                    <FontAwesomeIcon icon={faSpinner} spin />
+                    <p>Loading your bookings...</p>
+                </div>
+            </>
+        );
+    }
 
     return (
-        <div className="myBookingsContainer">
-            <h1>My Bookings</h1>
-            {bookings.length === 0 ? (
-                <div className="noBookings">
-                    <p className="emptyMessage">You don’t have any bookings yet.</p>
-                    <Link to="/hotels" className="browseHotels">
-                        Browse Hotels
-                    </Link>
+        <>
+            <Navbar />
+            <div className="myBookingsContainer">
+                <div className="bookingsHeader">
+                    <h1>My Bookings</h1>
+                    <div className="filterButtons">
+                        <button
+                            className={`filterBtn ${filter === "all" ? "active" : ""}`}
+                            onClick={() => setFilter("all")}
+                        >
+                            All Bookings
+                        </button>
+                        <button
+                            className={`filterBtn ${filter === "upcoming" ? "active" : ""}`}
+                            onClick={() => setFilter("upcoming")}
+                        >
+                            Upcoming
+                        </button>
+                        <button
+                            className={`filterBtn ${filter === "past" ? "active" : ""}`}
+                            onClick={() => setFilter("past")}
+                        >
+                            Past
+                        </button>
+                    </div>
                 </div>
-            ) : (
-                <div className="bookingList">
-                    {bookings.map((booking) => (
-                        <div key={booking._id} className="bookingCard">
-                            <Link
-                                to={`/hotels/${booking.hotelId}`}
-                                className="bookingLink"
-                            >
-                                <h2>{booking.hotelName || "Hotel Name"}</h2>
-                                <p>
-                                    Check-in: {new Date(booking.checkInDate).toLocaleDateString()} <br />
-                                    Check-out: {new Date(booking.checkOutDate).toLocaleDateString()} <br />
-                                    Rooms: {booking.options?.room || 1}, Adults: {booking.options?.adult || 1}, Children: {booking.options?.children || 0}
-                                </p>
-                                <p className="totalPrice">Total Price: Rs {booking.amount}</p>
-                            </Link>
-                            <button
-                                className="cancelButton"
-                                onClick={() => setCancelId(booking._id)}
-                            >
-                                Cancel Booking
-                            </button>
 
-                            {cancelId === booking._id && (
-                                <div className="cancelModal">
-                                    <div className="modalContent">
-                                        <p>Are you sure you want to cancel this booking?</p>
-                                        <div className="modalButtons">
-                                            <button
-                                                className="confirmCancel"
-                                                onClick={() => handleCancel(booking._id)}
-                                            >
-                                                Yes, Cancel
-                                            </button>
-                                            <button
-                                                className="dismissCancel"
-                                                onClick={() => setCancelId(null)}
-                                            >
-                                                No
-                                            </button>
+                {bookings.length === 0 ? (
+                    <div className="noBookings">
+                        <FontAwesomeIcon icon={faSuitcase} className="emptyIcon" />
+                        <p className="emptyMessage">You don't have any bookings yet.</p>
+                        <Link to="/" className="browseHotels">
+                            Browse Hotels
+                        </Link>
+                    </div>
+                ) : (
+                    <div className="bookingList">
+                        {filteredBookings.map((booking) => (
+                            <div key={booking._id} className="bookingCard">
+                                <span className={`statusBadge status-${getBookingStatus(booking)}`}>
+                                    <FontAwesomeIcon icon={getBookingStatus(booking) === "upcoming" ? faCalendarCheck : faCalendarXmark} />{" "}
+                                    {getBookingStatus(booking).charAt(0).toUpperCase() + getBookingStatus(booking).slice(1)}
+                                </span>
+
+                                <Link to={`/hotels/${booking.hotelId}`} className="hotelTitle">
+                                    <FontAwesomeIcon icon={faHotel} />
+                                    <h2>{booking.hotelName || "Hotel Name"}</h2>
+                                </Link>
+
+                                <div className="bookingDetails">
+                                    <div className="detailRow">
+                                        <FontAwesomeIcon icon={faCalendarDays} />
+                                        <div className="dates">
+                                            <p>Check-in: {formatDate(booking.checkInDate)}</p>
+                                            <p>Check-out: {formatDate(booking.checkOutDate)}</p>
                                         </div>
                                     </div>
+
+                                    <div className="detailRow">
+                                        <FontAwesomeIcon icon={faUsers} />
+                                        <div className="guests">
+                                            <p>
+                                                Rooms: {booking.options?.room || 1},
+                                                Adults: {booking.options?.adult || 1},
+                                                Children: {booking.options?.children || 0}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="detailRow">
+                                        <FontAwesomeIcon icon={faMoneyBill} />
+                                        <p className="totalPrice">Rs. {booking.amount}</p>
+                                    </div>
                                 </div>
-                            )}
+
+                                {getBookingStatus(booking) === "upcoming" && (
+                                    <button
+                                        className="cancelButton"
+                                        onClick={() => handleCancelClick(booking)}
+                                    >
+                                        <FontAwesomeIcon icon={faCalendarXmark} /> Cancel Booking
+                                    </button>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {showCancelModal && (
+                    <div className="cancelModal">
+                        <div className="modalContent">
+                            <FontAwesomeIcon icon={faExclamationTriangle} className="modalIcon" />
+                            <h3>Cancel Booking</h3>
+                            <p>Are you sure you want to cancel this booking?</p>
+                            <p className="modalNote">This action cannot be undone.</p>
+                            <div className="modalButtons">
+                                <button className="confirmCancel" onClick={handleConfirmCancel}>
+                                    Yes, Cancel
+                                </button>
+                                <button className="dismissCancel" onClick={() => setShowCancelModal(false)}>
+                                    No, Keep it
+                                </button>
+                            </div>
                         </div>
-                    ))}
-                </div>
-            )}
-        </div>
+                    </div>
+                )}
+            </div>
+        </>
     );
 };
 

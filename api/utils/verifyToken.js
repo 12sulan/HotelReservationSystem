@@ -4,8 +4,13 @@ import createError from "../utils/error.js";
 // Middleware: Verify the JWT token
 export const verifyToken = (req, res, next) => {
   console.log(req.cookies);
-  const token = req.cookies.access_token;
-  console.log("Verifying token:", token);
+  // Try access_token cookie first, then Authorization header as a fallback
+  const cookieToken = req.cookies?.access_token;
+  const authHeader = req.headers?.authorization;
+  const bearerToken = authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null;
+  const token = cookieToken || bearerToken;
+  console.log("Verifying token:", token ? '[REDACTED]' : token);
+
   if (!token) {
     return next(createError(401, "You are not authenticated!"));
   }

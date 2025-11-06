@@ -91,18 +91,29 @@ const Reserve = ({ setOpen, hotelId }) => {
 
       // 3️⃣ Create booking
       const bookingData = {
+        userId: user._id,
         hotelId,
+        hotelName: data[0]?.title || "", // Add hotel name
         roomNumbers: selectedRooms,
-        startDate: dates[0].startDate,
-        endDate: dates[0].endDate,
-        total: totalPrice,
+        checkInDate: dates[0].startDate,
+        checkOutDate: dates[0].endDate,
+        amount: totalPrice,
+        options: {
+          room: selectedRooms.length,
+          adult: options.adult || 1,
+          children: options.children || 0
+        },
+        status: "confirmed"
       };
 
       await axios.post(
         "http://localhost:8801/api/bookings",
         bookingData,
         {
-          headers: { Authorization: `Bearer ${user.token}` },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`
+          },
           withCredentials: true
         },
       );

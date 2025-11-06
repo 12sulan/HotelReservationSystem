@@ -3,31 +3,53 @@ import Hotel from "../models/Hotel.js";
 
 // Create a new booking (by a user)
 export const createBooking = async (req, res, next) => {
-    // Map the incoming fields to the correct model fields
-    const bookingData = {
-        userId: req.user.id,
-        hotelId: req.body.hotelId,
-        roomNumbers: Array.isArray(req.body.roomNumbers) ? req.body.roomNumbers.map(num => parseInt(num)) : [],
-        checkInDate: req.body.startDate,
-        checkOutDate: req.body.endDate,
-        amount: req.body.total,
-    };
-
-    const newBooking = new Booking(bookingData);
-
     try {
-        const savedBooking = await newBooking.save();
+        // Accept either client naming (startDate/endDate/total) or API model naming (checkInDate/checkOutDate/amount)
+        const hotelId = req.body.hotelId || req.body.hotelID || req.body.hotel;
+        const roomNumbers = req.body.roomNumbers || req.body.rooms || req.body.roomNumbers;
+        const start = req.body.startDate || req.body.checkInDate || req.body.check_in_date;
+        const end = req.body.endDate || req.body.checkOutDate || req.body.check_out_date;
+        const total = req.body.total || req.body.amount || req.body.price;
 
-        // Optional: Update booked rooms in Hotel model if needed
-        if (req.body.roomNumbers && req.body.hotelId) {
-            await Hotel.updateOne(
-                { _id: req.body.hotelId, "rooms.number": { $in: req.body.roomNumbers } },
-                { $set: { "rooms.$[].unavailableDates": req.body.checkInDate } } // customize if you track booked dates
-            );
+        if (!hotelId || !roomNumbers || !start || !end || total === undefined) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing required booking information"
+            });
         }
+
+        // Map the incoming fields to the Booking model
+        const bookingData = {
+            userId: req.user?.id || req.user?._id,
+            hotelId: hotelId,
+            roomNumbers: Array.isArray(roomNumbers) ? roomNumbers : [roomNumbers],
+            checkInDate: new Date(start),
+            checkOutDate: new Date(end),
+            amount: Number(total),
+            status: req.body.status || "pending"
+        };
+
+        // Validate dates
+        if (bookingData.checkInDate < bookingData.checkOutDate) {
+            return res.status(400).json({
+                success: false,
+                message: "Check-out date must be after check-in date"
+            });
+        }
+
+        const newBooking = new Booking(bookingData);
+        const savedBooking = await newBooking.save();
 
         res.status(201).json(savedBooking);
     } catch (err) {
+        console.error("Booking creation error:", err);
+        if (err.name === 'ValidationError') {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid booking data",
+                errors: Object.values(err.errors).map(e => e.message)
+            });
+        }
         next(err);
     }
 };
