@@ -49,7 +49,7 @@ const Login = () => {
     } catch (error) {
       dispatch({
         type: "LOGIN_FAILURE",
-        payload: error.response?.data || "Login failed",
+        payload: error.response?.data?.message || "Login failed",
       });
     }
   };

@@ -3,7 +3,7 @@ import useFetch from "../../hooks/useFetch";
 import { Link } from "react-router-dom";
 
 const FeaturedProperties = () => {
-  const { data, loading, error } = useFetch("/hotels?featured=true&limit=4");
+  const { data, loading, error } = useFetch("/hotels?featured=true&limit=6");
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading featured properties.</div>;

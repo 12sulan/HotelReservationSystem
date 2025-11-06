@@ -70,7 +70,7 @@ export const getallHotel = async (req, res, next) => {
     // if (Object.keys(priceFilter).length) query.cheapestPrice = priceFilter;
     if (Object.keys(priceFilter).length) query.cheapestPrice = priceFilter;
 
-    const allHotels = await Hotel.find(query).limit(parseInt(limit) || 0);
+    const allHotels = await Hotel.find(query).sort({ updatedAt: -1 }).limit(parseInt(limit) || 0);
 
     res.status(200).json(allHotels);
   } catch (err) {

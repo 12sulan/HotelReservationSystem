@@ -1,3 +1,7 @@
+// App.jsx
+import { useContext } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import List from "./pages/list/List";
@@ -6,18 +10,17 @@ import New from "./pages/new/New";
 import EditHotel from "./pages/editHotel/EditHotel";
 import EditRoom from "./pages/editRoom/EditRoom";
 
-
-import { userInputs, hotelInputs, roomInputs } from "./formSource";
+import { userInputs, hotelInputs, roomInputs } from "./formSource.js"; // <-- make sure .js is included
 import "./style/dark.scss";
-import { useContext } from "react";
+
 import { DarkModeContext } from "./context/darkModeContext";
 import { AuthContext } from "./context/AuthContext";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
   const { user } = useContext(AuthContext);
 
+  // Protect admin routes
   const ProtectedRoute = ({ children }) => {
     if (!user || !user.isAdmin) return <Navigate to="/login" />;
     return children;
@@ -101,7 +104,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* ✅ EDIT HOTEL */}
           <Route
             path="/hotels/edit/:id"
             element={
@@ -141,7 +143,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* ✅ EDIT ROOM */}
           <Route
             path="/rooms/edit/:id"
             element={

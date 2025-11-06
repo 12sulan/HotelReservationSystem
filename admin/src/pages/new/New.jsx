@@ -10,31 +10,43 @@ const New = ({ inputs, title, apiEndpoint }) => {
   const [info, setInfo] = useState({});
 
   const handleChange = (e) => {
-    setInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+    const { id, value, type, checked } = e.target;
+    setInfo((prev) => ({
+      ...prev,
+      [id]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // Format the data based on specific field requirements
       const newItem = { ...info };
 
-      // Handle room numbers for room creation
+      // Handle roomNumbers for rooms
       if (newItem.roomNumbers) {
-        newItem.roomNumbers = newItem.roomNumbers.split(',').map(num => ({
-          number: num.trim()
+        newItem.roomNumbers = newItem.roomNumbers.split(",").map((num) => ({
+          number: num.trim(),
         }));
-      }
-
-      // Convert checkbox values to boolean
-      if (newItem.featured !== undefined) {
-        newItem.featured = Boolean(newItem.featured);
       }
 
       // Convert numeric fields
       if (newItem.price) newItem.price = Number(newItem.price);
       if (newItem.maxPeople) newItem.maxPeople = Number(newItem.maxPeople);
+
+      // If hotel creation, ensure cheapestPrice is set
+      if (apiEndpoint.includes("hotels")) {
+        if (!newItem.price) throw new Error("Price is required for hotels");
+        newItem.cheapestPrice = newItem.price;
+
+        // Capitalize type to match enum
+        const validTypes = ["Hotel", "Apartment", "Resort"];
+        if (!validTypes.includes(newItem.type)) {
+          newItem.type =
+            newItem.type.charAt(0).toUpperCase() +
+            newItem.type.slice(1).toLowerCase();
+        }
+      }
 
       console.log("Submitting to endpoint:", apiEndpoint);
       console.log("Data being sent:", newItem);
@@ -43,17 +55,18 @@ const New = ({ inputs, title, apiEndpoint }) => {
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",
-        }
+        },
       });
 
       console.log("Response:", response.data);
       alert("Item successfully added!");
 
       // Navigate back to list view
-      window.location.href = window.location.pathname.split('/new')[0];
+      window.location.href = window.location.pathname.split("/new")[0];
     } catch (err) {
       console.error("Error adding item:", err.response?.data || err.message);
-      const errorMessage = err.response?.data?.message || err.response?.data || err.message;
+      const errorMessage =
+        err.response?.data?.message || err.response?.data || err.message;
       alert(`Failed to add item: ${errorMessage}`);
     }
   };
@@ -99,6 +112,7 @@ const New = ({ inputs, title, apiEndpoint }) => {
                     type={input.type}
                     placeholder={input.placeholder}
                     onChange={handleChange}
+                    checked={input.type === "checkbox" ? info[input.id] || false : undefined}
                   />
                 </div>
               ))}
