@@ -7,6 +7,7 @@ import usersRoute from "./routes/users.js";
 import hotelsRoute from "./routes/hotels.js";
 import roomsRoute from "./routes/rooms.js";
 import bookingsRoute from "./routes/bookings.js";
+import esewaRoute from "./routes/esewa.js";
 
 import { errorHandler } from "./middlewares/errorHandler.js";
 import cookieParser from "cookie-parser";
@@ -69,6 +70,7 @@ app.use("/api/users", usersRoute);
 app.use("/api/hotels", hotelsRoute);
 app.use("/api/rooms", roomsRoute);
 app.use("/api/subscribe", subscribeRoute);
+app.use("/api/esewa", esewaRoute);
 
 
 

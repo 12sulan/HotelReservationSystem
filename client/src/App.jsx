@@ -15,6 +15,8 @@ import Register from "./pages/register/Register";
 import CustomerService from "./pages/CustomerService";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import MyBookings from "./pages/MyBookings/MyBookings";
+import PaymentSuccess from "./pages/payment/PaymentSuccess";
+import PaymentFailure from "./pages/payment/PaymentFailure";
 
 function App() {
   const { user } = useContext(AuthContext);
@@ -42,6 +44,22 @@ function App() {
           element={
             <ProtectedRoute>
               <MyBookings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payment/success"
+          element={
+            <ProtectedRoute>
+              <PaymentSuccess />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payment/failure"
+          element={
+            <ProtectedRoute>
+              <PaymentFailure />
             </ProtectedRoute>
           }
         />

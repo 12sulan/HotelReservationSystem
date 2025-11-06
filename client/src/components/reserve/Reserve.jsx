@@ -69,17 +69,7 @@ const Reserve = ({ setOpen, hotelId }) => {
     }
 
     try {
-      // 1️⃣ Update room availability for each room
-      await Promise.all(
-        selectedRooms.map((roomId) =>
-          axios.put(
-            `http://localhost:8801/api/rooms/availability/${roomId}`,
-            { dates: alldates }
-          )
-        )
-      );
-
-      // 2️⃣ Calculate total price
+      // 1️⃣ Calculate total price
       let totalPrice = 0;
       selectedRooms.forEach((roomId) => {
         data.forEach((room) => {
@@ -89,7 +79,7 @@ const Reserve = ({ setOpen, hotelId }) => {
       });
       totalPrice *= alldates.length; // number of nights
 
-      // 3️⃣ Create booking
+      // 2️⃣ Create initial booking
       const bookingData = {
         userId: user._id,
         hotelId,
@@ -103,10 +93,11 @@ const Reserve = ({ setOpen, hotelId }) => {
           adult: options.adult || 1,
           children: options.children || 0
         },
-        status: "confirmed"
+        status: "pending"
       };
 
-      await axios.post(
+      // Create booking first to get booking ID
+      const bookingResponse = await axios.post(
         "http://localhost:8801/api/bookings",
         bookingData,
         {
@@ -115,12 +106,63 @@ const Reserve = ({ setOpen, hotelId }) => {
             Authorization: `Bearer ${user.token}`
           },
           withCredentials: true
-        },
+        }
       );
 
-      alert("Booking successful!");
-      setOpen(false);
-      navigate("/my-bookings"); // redirect to bookings page
+      const bookingId = bookingResponse.data._id;
+
+      // 3️⃣ Generate eSewa payment URL
+      const esewaResponse = await axios.post(
+        "http://localhost:8801/api/esewa/generate",
+        {
+          amount: totalPrice,
+          bookingId: bookingId
+        },
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+          withCredentials: true
+        }
+      );
+
+      const { paymentUrl, formData } = esewaResponse.data.data;
+
+      // 4️⃣ Create and submit form to eSewa
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = paymentUrl;
+
+      // Add all required fields as per eSewa v2 API docs
+      const formFields = {
+        amount: formData.amount,
+        tax_amount: formData.tax_amount,
+        total_amount: formData.total_amount,
+        transaction_uuid: formData.transaction_uuid,
+        product_code: formData.product_code,
+        product_service_charge: formData.product_service_charge,
+        product_delivery_charge: formData.product_delivery_charge,
+        success_url: formData.success_url,
+        failure_url: formData.failure_url,
+        signed_field_names: formData.signed_field_names,
+        signature: formData.signature
+      };
+
+      // Create and append input fields
+      Object.entries(formFields).forEach(([key, value]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = String(value);
+        form.appendChild(input);
+      });
+
+      // Append form to body and submit
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
+
+      // The page will be redirected to eSewa
+      // Success/failure will be handled by the success_url/failure_url pages
+
     } catch (err) {
       console.error("Booking error:", err.response || err);
       alert(err.response?.data?.message || "Booking failed.");
